@@ -6,7 +6,7 @@
 
 from b1_data2 import apply_skill
 from b1_data2 import branch_Table
-from random import randint
+from dice import *
 
 arm_Table = ['Infantry', 'Cavalry', 'Artillery', 'Support', 'Commando']  #same table as the Imperial Marines
 army_life = ['Brawling', '+1 str', 'Gambling', '+1 dex', '+1 end', '+1 end', '+1 Pistol', '+1 soc', '+1 soc']
@@ -54,7 +54,7 @@ orank = ['Second Lieutenant', 'First Lieutenant', 'Captain', 'Major', 'Lieutenan
 def army_life_skill(grunt):
     'get a skill from the army life table'
 
-    roll = randint(0,5)
+    roll = dice()-1
     if grunt.officer:
         if grunt.rank < 3:
             roll += 1
@@ -79,7 +79,7 @@ def army_life_skill(grunt):
 def marine_life_skill(grunt):
     'get a skill from the marine life table'
 
-    roll = randint(0,5)
+    roll = dice()-1
     if grunt.officer:
         if grunt.rank < 3:
             roll += 1
@@ -102,7 +102,7 @@ def marine_life_skill(grunt):
 ###################################################################
 def get_nco_skill(grunt):
 
-    roll = randint(0,5)
+    roll = dice()-1
 
     if grunt.rank == 4:   # Sergeant
         roll += 1
@@ -128,7 +128,7 @@ def get_nco_skill(grunt):
 ###################################################################
 def get_mos_skill(grunt):
 
-    roll = randint(0,5)
+    roll = dice()-1
     if grunt.TL >= 12:
         roll += 1
 #Army and Marine Arms are the same
@@ -222,14 +222,14 @@ def o_promote(grunt):
 def shipboard_skill(grunt):
     'get a shipboard skill. Only for Marines serving as ships troops'
 
-    roll = randint(0,5)
+    roll = dice()-1
     grunt.skills.append(shipboard_skills[roll])
     grunt.history.append(shipboard_skills[roll])
 #end shipboard_skill 
     
 def get_staff_skill(grunt):
 
-    roll = randint(0,5)
+    roll = dice()-1
     if (2 < grunt.rank < 6):
         roll += 1
     elif (grunt.rank > 5):
@@ -242,7 +242,7 @@ def get_staff_skill(grunt):
 
 def get_command_skill(grunt):
 
-    roll = randint(0,5)
+    roll = dice()-1
     if (2 < grunt.rank < 6):
         Roll += 1
     elif (grunt.rank > 5):
@@ -261,28 +261,28 @@ def commando_school(grunt):
     # then the character is an instructor at the school
     # and gets one leve of Instruction skill
     
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Brawling')
         grunt.history.append('Brawling')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Gun Cmbt')
         grunt.history.append('Gun Cmbt')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Demolition')
         grunt.history.append('Demolition')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Wilderness Survival')
         grunt.history.append('Wilderness Survival')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Recon')
         grunt.history.append('Recon')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Vac Suit')
         grunt.history.append('Vac Suit')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Blade Cbt')
         grunt.history.append('Blade Cbt')
-    if randint(0,5) >= 4:
+    if dice()-1 >= 4:
         grunt.skills.append('Instruction')
         grunt.history.append('Instruction')
 #end of Commando_school
@@ -292,13 +292,13 @@ def cross_train(grunt):
     
     if grunt.branch == branch_Table[0]:
         if grunt.arm == arm_Table[0]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             grunt.xtrained.append(arm_Table[roll])
             s = 'Cross Trained in ' + arm_Table[roll]
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[1]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             if roll == 1:
                 roll = 0    #Can't x-train in your arm, setting to infantry
             grunt.xtrained.append(arm_Table[roll])
@@ -306,7 +306,7 @@ def cross_train(grunt):
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[2]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             if roll == 2:
                 roll = 0    #Can't x-train in your arm, setting to infantry
             grunt.xtrained.append(arm_Table[roll])
@@ -314,7 +314,7 @@ def cross_train(grunt):
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[3]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             if roll == 3:
                 roll = 0    #Can't x-train in your arm, setting to infantry
             grunt.xtrained.append(arm_Table[roll])
@@ -322,20 +322,20 @@ def cross_train(grunt):
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[4]:
-            roll = randint(0,3)  #x-training commandos is easy
+            roll = dice(sides=4)-1  #x-training commandos is easy
             grunt.xtrained.append(arm_Table[roll])
             s = 'Cross Trained in ' + arm_Table[roll]
             grunt.history.append(s)
             get_mos_skill(grunt)
     elif grunt.branch == branch_Table[1]:
         if grunt.arm == arm_Table[0]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             grunt.xtrained.append(arm_Table[roll])
             s = 'Cross Trained in '  + arm_Table[roll]
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[1]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             if roll == 1:
                 roll = 0    #Can't x-train in your arm, setting to infantry
             grunt.xtrained.append(arm_Table[roll])
@@ -343,7 +343,7 @@ def cross_train(grunt):
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[2]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             if roll == 2:
                 roll = 0    #Can't x-train in your arm, setting to infantry
             grunt.xtrained.append(arm_Table[roll])
@@ -351,7 +351,7 @@ def cross_train(grunt):
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[3]:
-            roll = randint(1,3)
+            roll = dice(sides=3)
             if roll == 3:
                 roll = 0    #Can't x-train in your arm, setting to infantry
             grunt.xtrained.append(arm_Table[roll])
@@ -359,7 +359,7 @@ def cross_train(grunt):
             grunt.history.append(s)
             get_mos_skill(grunt)
         elif grunt.arm == arm_Table[4]:
-            roll = randint(0,3)  #x-training commandos is easy
+            roll = dice(sides=4)-1  #x-training commandos is easy
             grunt.xtrained.append(arm_Table[roll])
             s = 'Cross Trained in ' + arm_Table[roll]
             grunt.history.append(s)
@@ -371,7 +371,7 @@ def cross_train(grunt):
 
 def specialist_school(grunt):
   
-    roll = randint(0,5)
+    roll = dice()-1
     s = 'Attended %s school' % specialist_school_table[roll]
     grunt.history.append(s)
     
@@ -391,10 +391,10 @@ def pf_training(grunt):
     # then the character is an instructor at the school
     # and gets one level of Instruction skill
 
-    if randint(0,5) >= 2:
+    if dice()-1 >= 2:
         grunt.skills.append('Vac Suit')
     grunt.history.append('Vac Suit')
-    if randint(0,5) >= 2:
+    if dice()-1 >= 2:
         grunt.skills.append('Zero-G Cbt')
     grunt.history.append('Zero-G Cbt')
 #end of pf_training
@@ -409,8 +409,8 @@ def ocs(grunt):
     grunt.officer = True
     grunt.rank = 0
     #1 skill off command Skills and another off Staff Skills
-    roll_1 = randint(0,5)
-    roll_2 = randint(0,5)
+    roll_1 = dice()-1
+    roll_2 = dice()-1
     grunt.skills.append(command_skills[roll_1])
     grunt.skills.append(staff_skills[roll_2])
     grunt.history.append(command_skills[roll_1])
@@ -418,7 +418,7 @@ def ocs(grunt):
 
     #IA and IM, in addition get a MOS Table skill
     if (grunt.branch == branch_Table[0]) or (grunt.branch == branch_Table[1]):
-        roll_1 = randint(0,5)
+        roll_1 = dice()-1
         if grunt.arm == 0:
             grunt.skills.append(mos_inf[roll_1])
             grunt.history.append(mos_inf[roll_1])
@@ -440,7 +440,7 @@ def ocs(grunt):
 
 def special_assign(grunt):
 
-    roll = randint(0,5)
+    roll = dice()-1
 
     if grunt.officer:    
         s = 'Special Assignment is %s' % sa_officer[roll]
@@ -448,40 +448,40 @@ def special_assign(grunt):
         if 0 == roll:
             grunt.schools.append(sa_officer[roll])
             grunt.history.append(sa_officer[roll])
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Forgery')
                 grunt.history.append('Forgery')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Bribery')
                 grunt.history.append('Bribery')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Streetwise')
                 grunt.history.append('Streetwise')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Interrogation')
                 grunt.history.append('Interrogation')
         elif 1 == roll:
             grunt.schools.append(sa_officer[roll])
             grunt.history.append(sa_officer[roll])
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Tactics')
                 grunt.history.append('Tactics')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Leadership')
                 grunt.history.append('Leadership')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Recon')
                 grunt.history.append('Recon')
         elif 2 == roll:
             grunt.schools.append(sa_officer[roll])
             grunt.history.append(sa_officer[roll])
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Admin')
                 grunt.history.append('Admin')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Engineering')
                 grunt.history.append('Engineering')
-            if randint(0,5) >= 3:
+            if dice()-1 >= 3:
                 grunt.skills.append('Computer')
                 grunt.history.append('Computer')
         elif 3 == roll:
@@ -492,7 +492,7 @@ def special_assign(grunt):
             grunt.skills.append('Recruiting')
             #grunt.history.append('Recruiting')
         elif 5 == roll:
-            if randint(0,5) > 3:
+            if dice()-1 > 3:
                 grunt.upp.soc += 1
                 grunt.specials.append('Aide to General officer')
                 grunt.history.append('Aide to General officer')
@@ -532,7 +532,7 @@ def get_skill(grunt, ua, ga):
     if (grunt.officer == False):          #Not an officer'
         if (grunt.rank < 2):          # Enlisted
             if grunt.branch == branch_Table[0]:      # Army - Army Life of MOS skill
-                if (1 == randint(0, 1)):
+                if coin_flip():
                     army_life_skill(grunt)
                 else:
                     get_mos_skill(grunt)
@@ -540,7 +540,7 @@ def get_skill(grunt, ua, ga):
                 if ua == 'Shp Trp':
                     shipboard_skill(grunt)
                 else:
-                    if (1 == randint(0, 1)):
+                    if coin_flip():
                         marine_life_skill(grunt)
                     else:
                         get_mos_skill(grunt)
@@ -548,9 +548,9 @@ def get_skill(grunt, ua, ga):
          
         elif (grunt.rank > 1):     #NCO
             if (branch_Table[1] == grunt.branch) and ('Shp Trp' == ua):     # if ship troops, additional skill table
-                choice = randint(0,3)
+                choice = dice(sides=4)-1
             else:
-                choice = randint(0, 2)
+                choice = dice(sides=3)-1
             if 0 == choice:
                 if grunt.branch == branch_Table[0]:
                     army_life_skill(grunt)
@@ -564,7 +564,7 @@ def get_skill(grunt, ua, ga):
                 shipboard_skill(grunt)
     else:   #Bleeding Officer
         if 'Command' == ga:
-            roll = randint(0,2)
+            roll = dice(sides=3)-1
             if 0 == roll:
                 if branch_Table[0] == grunt.branch:     #Army
                     army_life_skill(grunt)
@@ -578,7 +578,7 @@ def get_skill(grunt, ua, ga):
             elif 2 == roll:
                 get_command_skill(grunt)
         elif 'Staff' == ga:
-            roll = randint(0,2)
+            roll = dice(sides=3)-1
             if 0 == roll:
                 if branch_Table[0] == grunt.branch:     #Army
                     army_life_skill(grunt)
@@ -688,10 +688,10 @@ def sup_res(grunt, ua, ga):
         skill_target = no_chance
 
     #roll 2 dice
-#   roll = randint(1, 6) + randint(1,6)
+#   roll = dice(qty=2)
 
     # Survival check, no DM coded yet
-    sroll = randint(1, 6) + randint(1,6)
+    sroll = dice(qty=2)
     if sroll < survival_target:
         s = 'Failed survival target of %d' % survival_target
         grunt.history.append(s)
@@ -702,14 +702,14 @@ def sup_res(grunt, ua, ga):
             grunt.decorations.append('Wound Badge awarded in ' + ua)
 
     #Decoration check
-    droll = randint(1, 6) + randint(1,6)
+    droll = dice(qty=2)
     if droll >= dec_target:
         get_medal(grunt, droll, dec_target, ua)
         s = 'Received a %s' % decorations[-1]
         grunt.history.append(s)
 
     #Promotion check
-    p_roll = randint(1, 6) + randint(1,6)
+    p_roll = dice(qty=2)
     if grunt.upp.int >= 8:  # +1 DM if int 8+
         p_roll += 1
     if (grunt.arm == arm_Table[4]) and (grunt.upp.end >= 8):
@@ -723,7 +723,7 @@ def sup_res(grunt, ua, ga):
             e_promote(grunt)
 
     #Skill check 
-    s_roll = randint(1, 6) + randint(1,6)
+    s_roll = dice(qty=2)
 #    print 'Skill check: roll: %d Target: %d' % (s_roll, skill_target)
     if s_roll >= skill_target:
         get_skill(grunt,ua, ga)
@@ -835,14 +835,14 @@ def mar_res(grunt, ua, ga):
  
 
     #Decoration check
-    droll = randint(1, 6) + randint(1,6)
+    droll = dice(qty=2)
     if droll >= dec_target:
         get_medal(grunt, droll, dec_target, ua)
         s = 'Received a %s' % grunt.decorations[-1]
         grunt.history.append(s)
 
     #Promotion check
-    p_roll = randint(1, 6) + randint(1,6)
+    p_roll = dice(qty=2)
     if (grunt.arm == arm_Table[4]) and (grunt.upp.end >= 8):
         p_roll += 1     #Commandos get a +1 promotion DM if endurance is 8+
     if grunt.officer:
@@ -854,13 +854,13 @@ def mar_res(grunt, ua, ga):
             e_promote(grunt)
 
     #Skill check 
-    s_roll = randint(1, 6) + randint(1,6)
+    s_roll = dice(qty=2)
 #    print 'Skill check: roll: %d Target: %d' % (s_roll, skill_target)
     if s_roll >= skill_target:
         get_skill(grunt,ua, ga)
 
         # Survival check, no DM coded yet
-    sroll = randint(1, 6) + randint(1,6)
+    sroll = dice(qty=2)
     if sroll < survival_target:
         s = 'Failed survival target of %d with a roll of %d' % (survival_target, sroll)
         grunt.history.append(s)
@@ -966,7 +966,7 @@ def com_res(grunt, ua, ga):
 
 
     # Survival check, no DM coded yet
-    sroll = randint(1, 6) + randint(1,6)
+    sroll = dice(qty=2)
     if sroll < survival_target:
         s = 'Failed survival target of %d' % survival_target
         grunt.history.append(s)
@@ -978,7 +978,7 @@ def com_res(grunt, ua, ga):
             grunt.history.append('Purple Heart awarded in ' + ua)
 
     #Decoration check
-    droll = randint(1, 6) + randint(1,6)
+    droll = dice(qty=2)
     if droll >= dec_target:
         get_medal(grunt,droll, dec_target, ua)
         s = 'Received a %s' % grunt.decorations[-1]
@@ -986,16 +986,16 @@ def com_res(grunt, ua, ga):
 
     #Promotion check
     if (grunt.officer and (grunt.promote_this_term == 0)):
-        if (randint(1, 6) + randint(1,6)) >= promot_target:
+        if (dice(qty=2)) >= promot_target:
             o_promote(grunt)
     else:
-        p_roll = randint(1, 6) + randint(1,6)
+        p_roll = dice(qty=2)
 #        print 'enlisted promotion check: roll: %d target: %d' % (p_roll, promot_target)
         if p_roll >= promot_target:
             e_promote(grunt)
 
     #Skill check 
-    s_roll = randint(1, 6) + randint(1,6)
+    s_roll = dice(qty=2)
     if s_roll >= skill_target:
         get_skill(grunt, ua, ga)
 #end of com_res
@@ -1092,7 +1092,7 @@ def ica_res(grunt, ua, ga):
         skill_target = no_chance
 
     # Survival check, no DM coded yet
-    sroll = randint(1, 6) + randint(1,6)
+    sroll = dice(qty=2)
     if sroll < survival_target:
         s = 'Failed survival target of %d' % survival_target
         grunt.history.append(s)
@@ -1104,14 +1104,14 @@ def ica_res(grunt, ua, ga):
             grunt.history.append('Wound Badge awarded in ' + ua)
 
     #Decoration check
-    droll = randint(1, 6) + randint(1,6)
+    droll = dice(qty=2)
     if droll >= dec_target:
         get_medal(grunt, droll, dec_target, ua)
         s = 'Received a %s' % grunt.decorations[-1]
         grunt.history.append(s)
 
     #Promotion check - Officers can only be promoted once per term.
-    p_roll = randint(1, 6) + randint(1,6)
+    p_roll = dice(qty=2)
     if (False == grunt.officer):
         if p_roll >= promot_target:
             e_promote(grunt)
@@ -1121,7 +1121,7 @@ def ica_res(grunt, ua, ga):
                     o_promote(grunt)
 
     #Skill check 
-    s_roll = randint(1, 6) + randint(1,6)
+    s_roll = dice(qty=2)
     if s_roll >= skill_target:
         get_skill(grunt, ua, ga)
 #end ics_res
@@ -1220,7 +1220,7 @@ def sup_res(grunt, ua, ga):
 
     #roll 2 dice
     # Survival check, no DM coded yet
-    sroll = randint(1, 6) + randint(1,6)
+    sroll = dice(qty=2)
     if sroll < survival_target:
         s = 'Failed survival target of %d' % survival_target
         grunt.history.append(s)
@@ -1232,7 +1232,7 @@ def sup_res(grunt, ua, ga):
             grunt.history.append('Wound Badge awarded in ' + ua)
 
     #Decoration check
-    droll = randint(1, 6) + randint(1,6)
+    droll = dice(qty=2)
     if droll >= dec_target:
         get_medal(grunt, droll, dec_target, ua)
         s = 'Received a %s' % grunt.decorations[-1]
@@ -1240,15 +1240,15 @@ def sup_res(grunt, ua, ga):
 
     #Promotion check
     if (grunt.officer and (grunt.promote_this_term == False)):
-        if (randint(1, 6) + randint(1,6)) >= promot_target:
+        if (dice(qty=2)) >= promot_target:
             o_promote(grunt)
     else:
-        p_roll = randint(1, 6) + randint(1,6)
+        p_roll = dice(qty=2)
         if p_roll >= promot_target:
             e_promote(grunt)
 
     #Skill check 
-    s_roll = randint(1, 6) + randint(1,6)
+    s_roll = dice(qty=2)
     if s_roll >= skill_target:
         get_skill(grunt, ua, ga)
 #end of supp_res

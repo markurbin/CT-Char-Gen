@@ -10,7 +10,7 @@
 # out to modules
 #
 
-from random import randint
+from dice import *
 import time
 #import sprint       #to print to to screen or file
 import b1_data2      #unique book 1 data
@@ -20,12 +20,12 @@ import b5_data      #unique book 5 data
 
 class upp(object):
     def __init__(self):
-        self.str = randint(1,6) + randint(1,6)
-        self.dex = randint(1,6) + randint(1,6)
-        self.end = randint(1,6) + randint(1,6)
-        self.int = randint(1,6) + randint(1,6)
-        self.edu = randint(1,6) + randint(1,6)
-        self.soc = randint(1,6) + randint(1,6)
+        self.str = dice(qty=2)
+        self.dex = dice(qty=2)
+        self.end = dice(qty=2)
+        self.int = dice(qty=2)
+        self.edu = dice(qty=2)
+        self.soc = dice(qty=2)
 #End of upp class
 
 class B4Char(object):
@@ -84,10 +84,10 @@ def army_marine_xtraining_xfer(grunt):
 
     #Check for Cross Training
     if ((False == grunt.officer) and grunt.xtrained) and (grunt.arm not in grunt.xtrained):
-        if 1 == randint(0,1):   # 50% chance
+        if coin_flip():   # 50% chance
             old_arm = grunt.arm
             s = len(grunt.xtrained)
-            x = randint(0,s)
+            x = dice(sides=s+1)-1
             new_arm = grunt.xtrained[x-1]
             s = 'Changing branch from %s to %s' % (old_arm, new_arm)
             grunt.history.append(s)
@@ -123,7 +123,7 @@ def check_reenlist(grunt):
             target -= 1
         if grunt.officer:
             target -=  1
-    roll = randint(1,6) + randint(1,6)
+    roll = dice(qty=2)
     if roll > target:
         return False
     else:
@@ -146,7 +146,7 @@ def first_term(grunt):
     grunt.history.append('Term 1 Year 1')
     grunt.history.append(grunt.branch + ' ' + grunt.arm)
     grunt.history.append('Basic Training: Cbt Rifleman')
-    roll = randint(0,5)
+    roll = dice()-1
     if grunt.TL >= 12:
         roll += 1
         
@@ -176,7 +176,7 @@ def first_term(grunt):
 def army_year(grunt):
     'Serve 1 year in the Imperial Army'
     # Determina General assignment
-    roll = randint(0,5)
+    roll = dice()-1
         # edu bonus not optional at this point
         # if Edu >= 8, +1 to the die rolll
     if grunt.upp.edu >= 8:
@@ -207,7 +207,7 @@ def army_year(grunt):
         b4_data2.special_assign(grunt)
 
     else:               # determine unit assignment
-        roll = (randint(1,6) + randint(1,6)) - 2
+        roll = dice(qty=2) - 2
         if grunt.branch == b1_data2.branch_Table[0]:
             if grunt.arm == b4_data2.arm_Table[0]:
                 ua = b4_data2.ua_inf[roll]
@@ -305,7 +305,7 @@ def army_career(grunt):
 def marine_year(grunt):
     'Serve 1 year in the Imperial Marines'
     # Determina General assignment
-    roll = randint(0,5)
+    roll = dice()-1
         # edu bonus not optional at this point
         # if Edu >= 8, +1 to the die rolll
     if grunt.upp.edu >= 8:
@@ -333,7 +333,7 @@ def marine_year(grunt):
     if ga == 'Special':
         b4_data2.special_assign(grunt)
     else:               # determine unit assignment
-        roll = (randint(1,6) + randint(1,6)) - 2
+        roll = dice(qty=2) - 2
         if grunt.branch == b1_data2.branch_Table[0]:
             if grunt.arm == b4_data2.arm_Table[0]:
                 ua = b4_data2.ua_inf[roll]

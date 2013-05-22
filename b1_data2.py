@@ -4,7 +4,7 @@
 # Mark Urbin
 # Rev 0.2
 
-from random import randint
+from dice import *
 
 
 noble_table = ['Knight', 'Baron', 'Marquis', 'Count', 'Duke']
@@ -16,7 +16,7 @@ marine_muster_table = ['Low Psg', '+2 int', '+1 edu', 'Blade', 'Travellers', 'Hi
 
 
 ###################################################################
-#  age_chech(grunt)
+#  age_check(grunt)
 #  grunt is the character object
 #  Returns True or False
 #
@@ -31,7 +31,7 @@ def age_check(grunt):
     
     if (grunt.age >= 34) and (grunt.age <= 46):
 
-        if (randint(1, 6) + randint(1, 6)) < 8:
+        if dice(qty=2) < 8:
             grunt.upp.str -= 1
             s = 'Str reduced by 1 at age %d' % grunt.age
             grunt.history.append(s)
@@ -39,7 +39,7 @@ def age_check(grunt):
                 grunt.alive = 0
                 return False
 
-        if (randint(1, 6) + randint(1, 6)) < 7:
+        if dice(qty=2) < 7:
             grunt.upp.dex -= 1
             s = 'Dex reduced by 1 at age %d' % grunt.age
             grunt.history.append(s)
@@ -47,7 +47,7 @@ def age_check(grunt):
                 grunt.alive = 0
                 return False
 
-        if (randint(1, 6) + randint(1, 6)) < 7:
+        if dice(qty=2) < 7:
             grunt.upp.end -= 1
             s = 'End reduced by 1 age %d' % grunt.age
             grunt.history.append(s)
@@ -59,7 +59,7 @@ def age_check(grunt):
 
     if (grunt.age >= 50) and (grunt.age <= 62):
  
-        if (randint(1, 6) + randint(1, 6)) < 9:
+        if dice(qty=2) < 9:
             grunt.upp.str -= 1
             s = 'Str reduced by 1 at age %d' % grunt.age
             grunt.history.append(s)
@@ -67,14 +67,14 @@ def age_check(grunt):
                 grunt.alive = False
                 return False
 
-        if (randint(1, 6) + randint(1, 6)) < 8:
+        if dice(qty=2) < 8:
             grunt.upp.dex -= 1
             s = 'Dex reduced by 1 at age %d' % grunt.age
             grunt.history.append(s)
             if grunt.upp.dex <= 0:
                 grunt.alive = Falase
                 return False
-        if (randint(1, 6) + randint(1, 6)) < 9:
+        if dice(qty=2) < 9:
             grunt.upp.end -= 1
             s = 'Edu reduced by 1 at age %d' % grunt.age
             grunt.history.append(s)
@@ -86,28 +86,28 @@ def age_check(grunt):
 
     if grunt.age >= 66:
 
-        if (randint(1, 6) + randint(1, 6)) < 9:
+        if dice(qty=2) < 9:
             grunt.upp.str -= 2
             s = 'Str reduced by 2 at age %d' % grunt.age
             grunt.history.append(s)
             if grunt.upp.str <= 0:
                 grunt.alive = False
                 return False
-        if (randint(1, 6) + randint(1, 6)) < 9:
+        if dice(qty=2) < 9:
             grunt.upp.dex -= 2
             s = 'Dex reduced by 2 at age %d' % grunt.age
             grunt.history.append(s)
             if grunt.upp.dex <= 0:
                 grunt.alive = False
                 return False
-        if (randint(1, 6) + randint(1, 6)) < 9:
+        if dice(qty=2) < 9:
             grunt.upp.end -= 2
             s = 'End reduced by 2 at age %d' % grunt.age
             grunt.history.append(s)
             if grunt.upp.end <= 0:
                 alive = False
                 return False
-        if (randint(1, 6) + randint(1, 6)) < 9:
+        if dice(qty=2) < 9:
             grunt.upp.int -= 1
             s = 'int reduced by 1 at age %d' % grunt.age
             grunt.history.append(s)
@@ -316,7 +316,7 @@ def muster_out(grunt):
         if ct >= 3:     #arbitary - max of 3 cash rolls
             bt += 1
         else:
-            if 1 == randint(0, 1):   # flip a coin.
+            if coin_flip():   # flip a coin.
                 ct += 1
             else:
                 bt += 1
@@ -325,7 +325,7 @@ def muster_out(grunt):
         bt -= 1
         ct += 1 
     for x in range(0, ct):
-        roll = randint(0, 5)
+        roll = dice()-1
 
 # alternate code skill.list.has_key('Gambling')
 # will return True if it is the list
@@ -345,7 +345,7 @@ def muster_out(grunt):
 
 
     for x in range(0, bt):
-        roll = randint(0, 5)
+        roll = dice()-1
         if grunt.rank > 4:
             roll += 1
         if branch_Table[0] == grunt.branch: #Army
