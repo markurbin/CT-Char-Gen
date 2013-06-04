@@ -7,7 +7,6 @@
 
 #from sprint import sprint
 from dice import *
-from b4_data2 import get_medal
 
 arm_enlisted_Table = ['Technical Services', 'Crew', 'Crew', 'Engineering', 'Engineering', 'Line', 'Flight', 'Medical']
 arm_officer_Table = ['Technical Services', 'Line', 'Line', 'Engineering', 'Engineering', 'Gunnery', 'Gunnery', 'Medical']
@@ -1133,7 +1132,7 @@ def lc_res(grunt, sa, command):
     #Decoration check
     droll = dice(qty=2)
     if droll >= dec_target:
-        get_medal(grunt, droll, dec_target, sa)
+        promotions.get_medal(grunt, droll, dec_target, sa)
         s = 'Received a %s' % grunt.decorations[-1]
         grunt.history.append(s)
 
