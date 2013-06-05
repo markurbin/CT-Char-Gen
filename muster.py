@@ -1,4 +1,5 @@
 from dice import *
+import b5_data
 
 army_cash_table = [2000, 5000, 10000, 10000, 10000, 20000, 30000]
 army_muster_table = ['Low Psg', '+1 int', '+2 edu', 'Gun', 'High Psg', 'Mid Psg', '+1 soc']
@@ -140,8 +141,11 @@ def apply_army_muster_benefit(roll, grunt):
 def muster_out(grunt):
     'Determine what cash and loot you get out alive with'
 
+    if grunt.is_dead():
+        return False
+    
     if grunt.is_navy():
-        raise Exception("Not implemented")
+        return b5_data2.muster_out(grunt)
 
     muster_out_rolls(grunt)
 
@@ -198,5 +202,5 @@ def muster_out(grunt):
         s = 'Muster out Benefit of %s' % loot
         grunt.apply_skill(loot)
         grunt.history.append(s)
-  
+    return True
 # end of muster_out()

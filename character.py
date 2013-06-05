@@ -1,6 +1,8 @@
+import time
 from dice import *
 from arm_data import *
 import b5_data       #unique book 5 data
+import career, muster
 
 enlisted_ranks = ['Private', 'Lance Corporal', 'Corporal', 'Lance Sergeant', 'Sergeant', 'Gunnery Sergeant', 'Leading Sergeant', 'First Sergeant', 'Sergeant Major']
 officer_ranks = ['Second Lieutenant', 'First Lieutenant', 'Captain', 'Major', 'Lieutenant Colonel', 'Colonel', 'Brigadier General', 'Major General', 'Lieutenant General', 'General']
@@ -120,7 +122,7 @@ class B4Char(object):
                 self.flight_fail = False
                 self.navalBranch = False
                 self.bat = False
-                self.dateTimeCreated = 'Fake Time'              
+                self.dateTimeCreated = time.asctime()  #Stick in a time/date stamp
 
         def is_army(self):
             return self.branch=='Imperial Army'
@@ -202,6 +204,57 @@ class B4Char(object):
                     return officer_ranks[self.rank]
             else:
                 return enlisted_ranks[self.rank]
+        def load(self, filename):
+            'Read in upp, branch, and arm from a file.  It probably only makes sense to do this at the start.'
+
+            try:
+                infile = open(filename, 'r')
+                line = infile.readline()
+            except:
+                return False
+            if len(line)<8:
+                return False # line too short
+
+            if line[0] != '?':    
+                self.upp.str = int(line[0])
+            if line[1] != '?':
+                self.upp.dex = int(line[1])
+            if line[2] != '?':
+                self.upp.end = int(line[2])
+            if line[3] != '?':
+                self.upp.int = int(line[3])
+            if line[4] != '?':
+                self.upp.edu = int(line[4])
+            if line[5] != '?':
+                self.upp.soc = int(line[5])
+
+            if 'M' == line[6]:
+                self.branch = 'Imperial Marines'  # Imperial Marines
+            elif 'A' == line[6]:
+                self.branch = 'Imperial Army'  # Imperial Army
+            elif 'N' == line[6]:
+                self.branch = 'Imperial Navy'  # Imperial Navy
+
+            if self.branch == 'Imperial Marines' or self.branch == 'Imperial Army':
+                if 'I' == line[7]:
+                    self.arm = 'Infantry'   #set arm to Infantry
+                elif 'C' == line[7]:
+                    self.arm = 'Cavalry'   #set arm to Cavalry
+                elif 'I' == line[7]:
+                    self.arm = 'Artillery'   #set arm to artillery
+                elif 'S' == line[7]:
+                    self.arm = 'Support'   #set arm to Support'
+                elif 'X' == line[7]:
+                    self.arm = 'Commando'   #set arm to Commando
+            else:
+                self.arm = b5_data.arm_enlisted_Table[0]  #Imperial Navy.  Set up later
+            #print 'read in %s' % line
+            return True
+        def career(self):
+            return career.career(self)
+        def muster_out(self):
+            return muster.muster_out(self)
+
 
 
 
