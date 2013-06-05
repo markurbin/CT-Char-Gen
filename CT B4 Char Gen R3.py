@@ -10,10 +10,7 @@
 # out to modules
 #
 
-#import sprint       #to print to to screen or file
-#import b5_data       #unique book 5 data
-#import branch_win   #wxpython module to pop up a window to pick the branch
-from character import B4Char
+import character as char
 import show.raw as raw
 
 
@@ -23,11 +20,9 @@ def looper(loop):
     officer = 0
     alive_Officer = 0
 
+    charlist = char.generate_multi(loop)
     count = 0
-    for i in range(loop):
-        b4g = B4Char()
-        b4g.career()
-        b4g.muster_out()
+    for b4g in charlist:
         if b4g.alive:
            alive += 1
            if b4g.officer:
@@ -46,11 +41,9 @@ def looper(loop):
 def looper2(loop):
     
     outfile = open('random_chars.csv', 'a')
+    charlist = char.generate_multi(loop)
     count = 0
-    for i in range(loop):
-        b4g = B4Char()
-        b4g.career()
-        b4g.muster_out()
+    for b4g in charlist:
         if b4g.alive:
            s = 'Alive, '
         else:
@@ -69,21 +62,13 @@ def looper2(loop):
 
 def single_Char():
     print '********************'
-    b4g = B4Char()   #Initialize the character
-
-    #check for init file & use it
-    b4g.load('uppba.txt')
-
+    b4g = char.generate('uppba.txt')
     
     print 'starting upp: '
     raw.print_init_upp(b4g)
 
     #Sb4g.arm = 'Commando'   #debug - set arm to Commando
-
-    b4g.career()
-
-    b4g.muster_out()
-            
+        
     raw.print_history(b4g)
     print '+++++'
     raw.print_Char_Data(b4g)
@@ -93,7 +78,7 @@ def single_Char():
 
 single_Char()
 
-#looper(20)
+#looper(1000)
 
 #looper2(20)
 

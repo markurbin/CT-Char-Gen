@@ -4,6 +4,22 @@ from arm_data import *
 import b5_data       #unique book 5 data
 import career, muster
 
+def generate(filename=None):
+    grunt = B4Char()
+    if filename!=None:
+        grunt.load(filename)
+    grunt.career()
+    grunt.muster_out()
+    return grunt
+
+def generate_multi(num_characters, *args, **kwargs):
+    charlist = []
+    for i in range(num_characters):
+        grunt = generate(*args, **kwargs)
+        charlist.append(grunt)
+    return charlist
+
+
 enlisted_ranks = ['Private', 'Lance Corporal', 'Corporal', 'Lance Sergeant', 'Sergeant', 'Gunnery Sergeant', 'Leading Sergeant', 'First Sergeant', 'Sergeant Major']
 officer_ranks = ['Second Lieutenant', 'First Lieutenant', 'Captain', 'Major', 'Lieutenant Colonel', 'Colonel', 'Brigadier General', 'Major General', 'Lieutenant General', 'General']
 
@@ -39,7 +55,11 @@ age_bands = [
 ]
 
 class InvalidStatName(Exception):
-    pass
+    def __init__(self, statkey, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+        self.statkey = statkey
+    def __str__(self):
+        return "InvalidStatName(%s)" % self.statkey
 
 class upp(object):
     def __init__(self):
@@ -57,7 +77,7 @@ class upp(object):
         elif statname=="int": return self.int
         elif statname=="edu": return self.edu
         elif statname=="soc": return self.soc
-        else: raise InvalidStatName()
+        else: raise InvalidStatName(statname)
     def set(self, statname, newvalue):
         lname = statname.lower()
         if   statname=="str": self.str = newvalue
@@ -66,7 +86,7 @@ class upp(object):
         elif statname=="int": self.int = newvalue
         elif statname=="edu": self.edu = newvalue
         elif statname=="soc": self.soc = newvalue
-        else: raise InvalidStatName()
+        else: raise InvalidStatName(statname)
     def adjust(self, statname, adjustment):
         self.set(statname, self.get(statname) + adjustment)
     def check(self):
@@ -161,6 +181,8 @@ class B4Char(object):
                 
                 self.stat_change(stat, adjustment, by_age)
             except ValueError:
+                pass
+            except InvalidStatName:
                 pass
 
         def is_dead(self):
