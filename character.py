@@ -1,7 +1,5 @@
 from dice import *
 from arm_data import *
-import b1_data2      #unique book 1 data
-import b4_data2      #unique book 4 data
 import b5_data       #unique book 5 data
 
 enlisted_ranks = ['Private', 'Lance Corporal', 'Corporal', 'Lance Sergeant', 'Sergeant', 'Gunnery Sergeant', 'Leading Sergeant', 'First Sergeant', 'Sergeant Major']

@@ -12,7 +12,6 @@
 
 import time
 #import sprint       #to print to to screen or file
-#import b4_data2      #unique book 4 data
 import b5_data       #unique book 5 data
 #import branch_win   #wxpython module to pop up a window to pick the branch
 from character import *

@@ -44,7 +44,7 @@ def cross_train(grunt):
         grunt.xtrained.append(crossarm)
         s = 'Cross-trained in ' + crossarm
         grunt.history.append(s)
-        get_mos_skill(grunt)
+        skills.get_mos_skill(grunt)
 #end of cross_train
 
 def specialist_school(grunt):

@@ -1,6 +1,4 @@
 from dice import *
-import b1_data2      #unique book 1 data
-#import b4_data2      #unique book 4 data
 from career_navy import *
 import resolve
 import schools
