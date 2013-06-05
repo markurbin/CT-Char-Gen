@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Code samples: http://wiki.python.org/moin/SimplePrograms
 # Traveller Book 4 & 5 character Generation using classes
 # November 2012 - Mark Urbin
