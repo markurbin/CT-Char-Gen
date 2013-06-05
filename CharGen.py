@@ -30,6 +30,8 @@ def main(genmode='single', genqty=10):
 		looper(genqty)
 	elif genmode=='list':
 		looper2(genqty, 'random_chars.csv', 'a')
+	elif genmode=='help' or genmode=='--help':
+		show_usage()
 	else:
 		print '"%s" is not a valid mode...' % genmode
 		show_usage()
