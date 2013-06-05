@@ -278,6 +278,4 @@ class B4Char(object):
             return muster.muster_out(self)
 
 
-
-
 # End of B4Char

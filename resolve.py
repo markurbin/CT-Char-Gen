@@ -346,3 +346,4 @@ def commando(grunt, ua, ga):
 def general(grunt, ua, ga):
     'resolve year: infantry, Cav or artilery'
     return resolve(grunt, ua, ga, "General")
+

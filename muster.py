@@ -204,3 +204,4 @@ def muster_out(grunt):
         grunt.history.append(s)
     return True
 # end of muster_out()
+

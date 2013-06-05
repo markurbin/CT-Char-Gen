@@ -1,4 +1,3 @@
-
 def award_medal(grunt, medal, ua):
     s = '%s awarded in %s' % (medal, ua)
     grunt.decorations.append(s)

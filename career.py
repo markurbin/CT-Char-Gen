@@ -183,3 +183,4 @@ def career(grunt):
     if grunt.alive:
         grunt.term -= 1 # magic offset
     grunt.upp.check()
+
