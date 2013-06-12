@@ -7,6 +7,7 @@
 
 #from sprint import sprint
 from dice import *
+import promotions #added 6/11/13 MU
 
 arm_enlisted_Table = ['Technical Services', 'Crew', 'Crew', 'Engineering', 'Engineering', 'Line', 'Flight', 'Medical']
 arm_officer_Table = ['Technical Services', 'Line', 'Line', 'Engineering', 'Engineering', 'Gunnery', 'Gunnery', 'Medical']
@@ -41,17 +42,18 @@ orank = ['Ensign','Sublieutenant','Lieutenant','Lieutenant Commander', 'Commande
 #  grunt is the character object
 #  skill is a text string
 #
-#  updates the character upp object 
+#  updates the character upp object
+#  6/11/13 MU removed upp call no longer used
 #
 ###################################################################
 def apply_skill(grunt, skill): 
 
     if '+1 str' == skill:
-        grunt.upp.inc_str()
+        grunt.upp.str += 1
     if '+1 dex' == skill:
-        grunt.upp.inc_dex()
+        grunt.upp.dex += 1
     if '+1 end'  == skill:
-        grunt.upp.inc_end()
+        grunt.upp.edu += 1
     if '+1 int' == skill:
         grunt.upp.int += 1
     if '+1 edu' == skill:
@@ -1444,7 +1446,7 @@ def eng_res(grunt, sa, command):
     #Decoration check
     droll = d_dm + dice(qty=2)
     if droll >= dec_target:
-        get_medal(grunt, droll, dec_target, sa)
+        promotions.get_medal(grunt, droll, dec_target, sa)  #added promotions. 6/11/13 MU
         s = 'Received a %s' % grunt.decorations[-1]
         grunt.history.append(s)
 

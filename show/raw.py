@@ -1,3 +1,5 @@
+from b5_data import display_b5_rank   # 6/11/13 MU
+
 def display_noble_rank(grunt):
     'Display the nobla rank, from Knight to Duke'
     title = grunt.noble_rank()

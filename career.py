@@ -5,8 +5,12 @@ import schools
 
 RETIREMENT_TERMS = 7
 
+
+
+
 def army_marine_xtraining_xfer(grunt):
     'Cross Training transfer for Army & Marines'
+    # MU 6/11/13 added old branch to history
 
     #Check for Cross Training
     if ((False == grunt.officer) and grunt.xtrained) and (grunt.arm not in grunt.xtrained):
@@ -21,9 +25,9 @@ def army_marine_xtraining_xfer(grunt):
     # if not commando and attended commando school, give chance to join commandos
     if ("Commando School" in grunt.schools) and (grunt.arm != "Commando"):
             #No choice! Going Commando!
+        s = 'Transfered to Commando arm from %s arm at start of term %d' % (grunt.arm, grunt.term)
+        grunt.history.append(s)
         grunt.arm = "Commando"
-        s = 'Transfered to Commando arm at start of term %d' % grunt.term
-        grunt.history.append(s)       
 #end of army_marine_xtraining_xfer
 
 def check_reenlist(grunt):
@@ -102,6 +106,8 @@ def resolve_year(grunt, ua, ga):
             resolve.general(grunt, ua, ga)
         elif grunt.arm == 'Support':
             resolve.support(grunt, ua, ga)
+        elif grunt.arm == 'Commando':
+            resolve.commando(grunt, ua, ga)   #MU 6/11/13 added commando option to Marines
 
 
 def army_marine_year(grunt):

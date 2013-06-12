@@ -262,9 +262,10 @@ target_numbers['Shp Trp'] = {
 
 def survival_check(grunt, survival_target, combat_action, ua, medal_name):
     # Survival check, no DM coded yet
+    #MU 6/11/13 add the number rolled on failure
     roll = dice(qty=2)
     if roll < survival_target:
-        s = 'Failed survival target of %d' % survival_target
+        s = 'Failed survival target of %d with a roll of %d' % (survival_target, roll)
         grunt.history.append(s)
         grunt.alive = False
         return False

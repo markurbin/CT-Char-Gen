@@ -154,7 +154,7 @@ class B4Char(object):
         def die(self, year=None, natural=False):
             self.alive = False
             if natural:
-                s = 'Died of natural causes (stat reduced to 0)'
+                s = 'Died of natural causes (stat reduced to 0) during year %d of term %d' % (year,self.term)
             else:
                 s = 'Died in service to the Imperium during year %d of term %d' % (year,self.term)
             self.history.append(s)
@@ -226,6 +226,7 @@ class B4Char(object):
                     return officer_ranks[self.rank]
             else:
                 return enlisted_ranks[self.rank]
+            
         def load(self, filename):
             'Read in upp, branch, and arm from a file.  It probably only makes sense to do this at the start.'
 
@@ -263,17 +264,19 @@ class B4Char(object):
                 elif 'C' == line[7]:
                     self.arm = 'Cavalry'   #set arm to Cavalry
                 elif 'I' == line[7]:
-                    self.arm = 'Artillery'   #set arm to artillery
+                    self.arm = 'Artillery'   #set arm to artillery  #Not valid for Marines to start in
                 elif 'S' == line[7]:
-                    self.arm = 'Support'   #set arm to Support'
+                    self.arm = 'Support'   #set arm to Support'   #Not valid for Marines to start in
                 elif 'X' == line[7]:
-                    self.arm = 'Commando'   #set arm to Commando
+                    self.arm = 'Commando'   #set arm to Commando   #currently for testing only, can't start in Commandos
             else:
                 self.arm = b5_data.arm_enlisted_Table[0]  #Imperial Navy.  Set up later
             #print 'read in %s' % line
             return True
+        
         def career(self):
             return career.career(self)
+        
         def muster_out(self):
             return muster.muster_out(self)
 
