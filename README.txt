@@ -29,3 +29,8 @@ Other Credits:
 Disclaimer:
 -----------
 The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977--2013 Far Future Enterprises.
+
+Notes:
+------
+* Defect detected 6/17/12 by Mark Urbin
+*   UPP increases either from in service or muster benefits not being applied.
