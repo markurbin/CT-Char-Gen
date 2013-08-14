@@ -1,5 +1,6 @@
 from dice import *
 from career_navy import *
+from skills import record  #MU 7/1/13
 import resolve
 import schools
 

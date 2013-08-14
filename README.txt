@@ -29,3 +29,8 @@ Other Credits:
 Disclaimer:
 -----------
 The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977--2013 Far Future Enterprises.
+
+Notes:
+------
+Defect - Attribute increases are not applied
+Defect - Muster benefits such as "Mid Psg" are being stored in the Skills list
