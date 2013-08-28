@@ -188,19 +188,19 @@ class B4Char(object):
         def is_dead(self):
             return not self.alive
 
-	def age_check(self):
-	    'Perform the age check.'
-	    if self.is_dead():  #already dead, don't bother
-	        return False
-	    for band in age_bands:
-	        if band["range"]["lower"] <= self.age <= band["range"]["upper"]:
-	            for stat, change in band["changes"].items():
-	                if dice(qty=2) < change["roll"]:
-	                    self.stat_change(stat, change["adj"], by_age=True)
+        def age_check(self):
+            'Perform the age check.'
+            if self.is_dead():  #already dead, don't bother
+                return False
+            for band in age_bands:
+                if band["range"]["lower"] <= self.age <= band["range"]["upper"]:
+                    for stat, change in band["changes"].items():
+                        if dice(qty=2) < change["roll"]:
+                            self.stat_change(stat, change["adj"], by_age=True)
                             if self.is_dead():
                                 return False
-	            break
-	    return True
+                    break
+            return True
 
         def arm_entry(self, special_marine_infantry=True):
             if self.branch=='Imperial Navy':
