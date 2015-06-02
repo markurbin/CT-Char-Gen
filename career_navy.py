@@ -1,5 +1,8 @@
 import b5_data       #unique book 5 data
 
+#from career import check_reenlist()
+import career
+
 def navy_term(grunt):
     'Work through a 4 year term in the Imperial Navy'
 
@@ -48,13 +51,13 @@ def navy_term(grunt):
         grunt.term += 1
         
         if grunt.term >= 7:
-            if 2 == check_reenlist(grunt):  
+            if 2 == career.check_reenlist(grunt):  
                 s = 'Manditory reenlistment after term %d' % grunt.term
                 grunt.history.append(s)
                 grunt.reenlist = True
             else:
                 grunt.reenlist = False
-        elif True == check_reenlist(grunt):
+        elif True == career.check_reenlist(grunt):
             grunt.reenlist = True
         else:
             grunt.reenlist = False
@@ -64,4 +67,3 @@ def navy_term(grunt):
     return True
 
 # end of navy_term()
-

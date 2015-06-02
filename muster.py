@@ -1,5 +1,4 @@
 from dice import *
-from skills import record
 import b5_data
 
 army_cash_table = [2000, 5000, 10000, 10000, 10000, 20000, 30000]
@@ -146,7 +145,7 @@ def muster_out(grunt):
         return False
     
     if grunt.is_navy():
-        return b5_data2.muster_out(grunt)
+        return b5_data.muster_out(grunt)
 
     muster_out_rolls(grunt)
 
@@ -201,8 +200,7 @@ def muster_out(grunt):
 
         grunt.muster_loot.append(loot)
         s = 'Muster out Benefit of %s' % loot
-        #grunt.apply_skill(loot)
-        record(grunt,loot)      #MU 7/1/13 replaced apply_skill with record
+        grunt.apply_skill(loot)
         grunt.history.append(s)
     return True
 # end of muster_out()

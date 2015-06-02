@@ -1,5 +1,5 @@
-branches = ['Imperial Army', 'Imperial Marines', 'Imperial Navy']
-arms = ['Infantry', 'Cavalry', 'Artillery', 'Support', 'Commando']
+branches = ('Imperial Army', 'Imperial Marines', 'Imperial Navy')
+arms = ('Infantry', 'Cavalry', 'Artillery', 'Support', 'Commando')
 arm_Table = {}
 arm_Table['Infantry'] = {
   "mos": ['Gun Cmbt', 'Gun Cmbt', 'Hvy Wpns', 'Hvy Wpns', 'Vehicle', 'Recon', 'Vac Suit'],

@@ -308,7 +308,9 @@ def resolve(grunt, ua, ga, unit_type):
     grunt.history.append(s)
     combat_action = False
 
-    unit_type = "Support"
+    #print 'unit type = ', unit_type #debug
+
+    #Sunit_type = "Support"
     
     table = target_numbers[ua][unit_type]
 

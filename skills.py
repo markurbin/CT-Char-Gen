@@ -1,19 +1,27 @@
+# 15 April 2015 - added support for skills as a dictionary
+
 from dice import *
 from arm_data import *
 
-army_life = ['Brawling', '+1 str', 'Gambling', '+1 dex', '+1 end', '+1 end', '+1 Pistol', '+1 soc', '+1 soc']
-marine_life = ['Brawling', 'Gambling', '+1 str', '+1 dex', '+1 end', '+1 Blade', '+1 edu', '+1 soc', '+1 soc']
+army_life = ('Brawling', '+1 str', 'Gambling', '+1 dex', '+1 end', '+1 end', '+1 Pistol', '+1 soc', '+1 soc')
+marine_life = ('Brawling', 'Gambling', '+1 str', '+1 dex', '+1 end', '+1 Blade', '+1 edu', '+1 soc', '+1 soc')
 
-nco_skills = ['Hvy Wpns', 'Mechanical', 'Tactics', 'Hvy Wpns', 'Mechanical', 'Tactics', 'Leader', 'Leader', 'Admin', 'Instruction', 'Admin']
-command_skills = ['+1 end', 'Gun Cmbt', 'Vehicle', 'Hvy Wpns', 'Leader', 'Tactics', 'Tactics', 'Leader']
-staff_skills = ['Mechanical', 'Fwd Obs', 'Computer', 'Electronics', 'Medic', 'Instruction', 'Admin', 'Admin']
-shipboard_skills = ['Fwd Obs', 'Ships Boat', 'Gunnery', 'Vac Suit', 'Gunnery', 'Vac Suit']
+nco_skills = ('Hvy Wpns', 'Mechanical', 'Tactics', 'Hvy Wpns', 'Mechanical', 'Tactics', 'Leader', 'Leader', 'Admin', 'Instruction', 'Admin')
+command_skills = ('+1 end', 'Gun Cmbt', 'Vehicle', 'Hvy Wpns', 'Leader', 'Tactics', 'Tactics', 'Leader')
+staff_skills = ('Mechanical', 'Fwd Obs', 'Computer', 'Electronics', 'Medic', 'Instruction', 'Admin', 'Admin')
+shipboard_skills = ('Fwd Obs', 'Ships Boat', 'Gunnery', 'Vac Suit', 'Gunnery', 'Vac Suit')
 
 
 def record(grunt, skillname):
-    grunt.skills.append(skillname)
+    #grunt.skills.append(skillname)
+    # if it is a stat increase, don't list it in skills, just apply it
+    # record in history either way
+    if '+' in skillname:
+        grunt.apply_skill(skillname)
+    else:
+        grunt.skills[skillname] = grunt.skills.get(skillname,0) + 1
     grunt.history.append(skillname)
-    grunt.apply_skill(skillname)
+    
 
 def life_skill(grunt):
     'get a skill from the army life table'

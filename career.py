@@ -1,6 +1,7 @@
+# 15 April 2015 - added support for skills as a dictionary
+
 from dice import *
 from career_navy import *
-from skills import record  #MU 7/1/13
 import resolve
 import schools
 
@@ -74,7 +75,8 @@ def check_reenlist(grunt):
 def first_term(grunt):
     'First term, year 1 is unique; Being nice, no survival roll first year'
 
-    grunt.skills.append('Cbt Rifleman') # Required first skill for Army & Marines
+    #grunt.skills.append('Cbt Rifleman') # Required first skill for Army & Marines
+    grunt.skills['Cbt Rifleman'] = grunt.skills.get('Cbt Rifleman',0) + 1
     grunt.history.append('Term 1 Year 1')
     grunt.history.append(grunt.branch + ' ' + grunt.arm)
     grunt.history.append('Basic Training: Cbt Rifleman')
@@ -83,7 +85,8 @@ def first_term(grunt):
         roll += 1
         
     entry = grunt.arm_entry(special_marine_infantry=False)["mos"][roll-1]
-    grunt.skills.append(entry)
+    #grunt.skills.append(entry)
+    grunt.skills[entry] = grunt.skills.get(entry,0) + 1
     s = 'Advance Training: %s' % entry
     grunt.history.append(s)
     

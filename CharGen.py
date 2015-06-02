@@ -55,7 +55,7 @@ def looper(loop):
     alive_Officer = 0
 
     charlist = char.generate_multi(loop)
-    count = 0
+    #count = 0
     for grunt in charlist:
         if grunt.alive:
            alive += 1
@@ -76,7 +76,7 @@ def looper2(loop, filename, fmode):
     
     outfile = open(filename, fmode)
     charlist = char.generate_multi(loop)
-    count = 0
+    #count = 0
     for grunt in charlist:
         if grunt.alive:
            s = 'Alive, '
