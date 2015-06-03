@@ -73,7 +73,7 @@ def print_Char_Data(grunt):
         for item in grunt.decorations:
             print item
     print 'Skills:'
-    grunt.skills.sort()
+    #grunt.skills.sort()
     for item in grunt.skills:
         print item
 

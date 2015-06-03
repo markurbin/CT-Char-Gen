@@ -1,8 +1,8 @@
 # Traveller Book 5 High Guard specific data and functions
 # "The Traveller game in all forms is owned by Far 
-# Future Enterprises. Copyright 1977 - 2013 Far Future Enterprises."
+# Future Enterprises. Copyright 1977 - 2015 Far Future Enterprises."
 # Mark Urbin
-# Feb 2013
+# Feb 2013 - June 2015
 #
 
 #from sprint import sprint
@@ -178,37 +178,36 @@ def display_b5_rank(grunt):
 		print(orank[grunt.rank])
 
 def get_branch_skill(grunt, bn):
-        
+    # June 2015 MU Updated to use dictionary for skills
 
-	print 'Debug: bn = ', bn
-	if bn > 5:
+	#print 'Debug: bn = ', bn
+
+    if bn > 5:
 		bn = randint(0,5)
 		print 'Debug: bn changed to ', bn
-	dm = 0
-	dm += 2 #Everybody is Imperial Navy for now
-	roll = dm + randint(0,5)
-	if bn == 0:
-		grunt.skills.append(line_crew[roll])
-		grunt.history.append(line_crew[roll])
-	elif bn == 1:
-		grunt.skills.append(flight[roll])
-		grunt.history.append(flight[roll])
-	elif bn == 2:
-		grunt.skills.append(gunnery[roll])
-		grunt.history.append(gunnery[roll])
-	elif bn == 3:
-		grunt.skills.append(engineering[roll])
-		grunt.history.append(engineering[roll])
-	elif bn == 4:
-		grunt.skills.append(medical[roll])
-		grunt.history.append(medical[roll])
-	elif bn == 5:
-		grunt.skills.append(technical[roll])
-		grunt.history.append(technical[roll])
-	else:
-		print 'in get_branch_skill() and we have a problem'
-		print 'bn = ', bn
-
+    dm = 0
+    dm += 2 #Everybody is Imperial Navy for now
+    roll = dm + randint(0,5)
+    if bn == 0:
+         entry = line_crew[roll]
+    elif bn == 1:
+         entry = flight[roll]
+    elif bn == 2:
+         entry = gunnery[roll]
+    elif bn == 3:
+         entry = engineering[roll]
+    elif bn == 4:
+         entry = medical[roll]
+    elif bn == 5:
+         entry = technical[roll]
+    else:
+         print 'in get_branch_skill() and we have a problem'
+         print 'bn = ', bn
+         return False
+         
+    grunt.skills[entry] = grunt.skills.get(entry,0) + 1
+    grunt.history.append(entry)
+    return True
 #end of get_branch_skill()      
 
 def navy_spec_school(grunt):
@@ -217,41 +216,32 @@ def navy_spec_school(grunt):
     dm = dice(7)-1
     roll = dm + dice()
     if roll == 1:
-        grunt.skills.append('Admin')
-        grunt.history.append('Admin')
+        ssSkill = 'Admin'
     elif roll == 2:
-        grunt.skills.append('Medical')
-        grunt.history.append('Medic')
+        ssSkill = 'Medical'
     elif roll == 3:
-        grunt.skills.append('Liaison')
-        grunt.history.append('Liaison')
+        ssSkill = 'Liaison'
     elif roll == 4:
-        grunt.skills.append('Mechanical')
-        grunt.history.append('Mechanical')
+        ssSkill = 'Mechanical'
     elif roll == 5:
-        grunt.skills.append('Electronics')
-        grunt.history.append('Electronics')
+        ssSkill = 'Electronics'
     elif roll == 6:
-        grunt.skills.append('Gravitics')
-        grunt.history.append('Gravitics')
+        ssSkill = 'Gravitics'
     elif roll == 7:
-        grunt.skills.append('Vehicle')
-        grunt.history.append('Vehicle')
+        ssSkill = 'Vehicle'
     elif roll == 8:
-        grunt.skills.append('Nav')
-        grunt.history.append('Nav')
+        ssSkill = 'Nav'
     elif roll == 9:
-        grunt.skills.append('Computer')
-        grunt.history.append('Computer')
+        ssSkill = 'Computer'
     elif roll == 10:
-        grunt.skills.append('Ships Boat')
-        grunt.history.append('Ships Boat')
+        ssSkill = 'Ships Boat'
     elif roll == 11:
-        grunt.skills.append('Communications')
-        grunt.history.append('Communications')
-    elif roll == 12:
-        grunt.skills.append('Vac Suit')
-        grunt.history.append('Vac Suit')
+        ssSkill = 'Communications'
+    else:
+        ssSkill = 'Vac Suit'
+ 
+    grunt.skills[ssSkill] = grunt.skills.get(ssSkill,0) + 1
+    grunt.history.append(ssSkill)
 #end navy_spec_school()
 
 def sa_select(grunt):
@@ -336,91 +326,8 @@ def navy_xtrain(grunt):
 			medical_res(grunt, sa, command)
 		elif roll == 5:
 			tech_res(grunt, sa, command)
-		 
-def sa_select(grunt):
-    dm = 0
-    if grunt.college and grunt.officer == False:
-        dm += 1
-    roll = dm + dice(2)
-    if roll == 2:
-        sa = 'Battle'
-    elif roll == 3 or roll == 10:
-        sa = 'Shore Duty'
-    elif roll == 4:
-        sa = 'Siege'
-    elif roll == 5 or roll == 9:
-        sa = 'Strike'
-    elif roll == 6 or roll == 8:
-        sa = 'Patrol'
-    elif roll == 7:
-        sa = 'Training'
-    else:
-        sa = 'Special Duty'
 
-    return sa
-#end of sa_select
-
-def navy_xtrain(grunt):
-    'Cross training in the Imperial Navy, not cross dressing'
-    trained = False
-    roll = 0
-    if not grunt.officer:
-        if grunt.arm == 'Crew':
-            roll = dice(5)
-            grunt.xtrained.append(navy_branch[roll])
-            s = 'Cross Trained in ' + navy_branch[roll]
-            grunt.history.append(s)
-            get_branch_skill(grunt, roll)
-        else:
-            x = 0
-            while x <= 5 and not trained:
-                if navy_branch[x] == grunt.branch:
-                    roll = x                #Find a branch grunt isn't in.
-                    while roll == x:
-                        roll = dice()-1
-                    trained = True
-                else:
-                    x += 1
-            if trained == False:
-                print 'in navy_xtrain() and we have a problem.'
-            grunt.xtrained.append(navy_branch[roll])
-            s = 'Cross Trained in ' + navy_branch[roll]
-            grunt.history.append(s)
-            get_branch_skill(grunt, roll)
-                
-    else:
-        x = 0
-        while x < 6  and not trained:
-            if navy_branch[x] == grunt.branch:
-                roll = x
-                while roll == x:
-                    roll = dice()-1
-            else:
-                x += 1
-                trained = True
-        grunt.xtrained.append(navy_branch[roll])
-        s = 'Cross Trained in ' + navy_branch[roll]
-        grunt.history.append(s)
-        #Resolve year in xtrained branch
-        command = False
-        command = navy_cmd_check(grunt)
-        sa = sa_select(grunt)
-        if roll == 0:
-            lc_res(grunt, sa, command)
-        elif roll == 1:
-            flight_res(grunt, sa, command)
-        elif roll == 2:
-            gunnery_res(grunt, sa, command)
-        elif roll == 3:
-            eng_res(grunt, sa, command)
-        elif roll == 4:
-            medical_res(grunt, sa, command)
-        elif roll == 5:
-            tech_res(grunt, sa, command)
-         
-
-#end of navy_xtrain()                  
-								  
+							  
 
 def check_college_admin(grunt):
     'Check for College Admission'
@@ -443,7 +350,7 @@ def check_college(grunt):
 	'check for college completion'
 	
 	if college(grunt):
-		return True
+         return True
 	else:
 		grunt.college_fail = True
 		grunt.history.append('Failed College')
@@ -502,99 +409,102 @@ def college(grunt):
 # end of college()
 
 def Naval_Academy(grunt):
-	dm = 0
-	if grunt.upp.soc >= 10:
+    'Naval Academy process'
+    # June 2015 MU Skills now handled as a dictionary
+    dm = 0
+    if grunt.upp.soc >= 10:
 		dm += 2
-	roll = dm + randint(1,6) + randint(1,6)
-	if roll >= 10:   #admitted into Academy
-		grunt.history.append('Accepted to Naval Academy')
-		dm = 0       #Check to see if graduated
-		if grunt.upp.int >= 8:
+    roll = dm + randint(1,6) + randint(1,6)
+    if roll >= 10:   #admitted into Academy
+        grunt.history.append('Accepted to Naval Academy')
+        dm = 0       #Check to see if graduated
+        if grunt.upp.int >= 8:
 			dm += 2
-		roll = dm + randint(1,6) + randint(1,6)
-		if roll >= 9:
-			grunt.history.append('Graduated Naval Academy')
-			grunt.academy = True
+        roll = dm + randint(1,6) + randint(1,6)
+        if roll >= 9:
+           grunt.history.append('Graduated Naval Academy')
+           grunt.academy = True
 			#Success full graduation, check for skills
-			if randint(1,6) >= 4:
-				grunt.skills.append('Vacc Suit')
-				grunt.history.append('Vacc Suit')
-			if randint(1,6) >= 4:
-				grunt.skills.append('Nav')
-				grunt.history.append('Nav')
-			if randint(1,6) >= 4:
-				grunt.skills.append('Engineering')
-				grunt.history.append('Engineering')
+           if randint(1,6) >= 4:
+               grunt.skills['Vacc Suit'] = grunt.skills.get('Vacc Suit',0) + 1
+               grunt.history.append('Vacc Suit')
+               
+           if randint(1,6) >= 4:
+              grunt.skills['Nav'] = grunt.skills.get('Nav',0) + 1
+              grunt.history.append('Nav')
+           if randint(1,6) >= 4:
+              grunt.skills['Engineering'] = grunt.skills.get('Engineering',0) + 1
+              grunt.history.append('Engineering')
 			#Add to education
-			dm = 0
-			if grunt.upp.int >= 9:
-				dm += 1
-			roll = dm + randint(1,6) - 3
-			if roll < 1:
-				roll = 1
-			grunt.upp.edu += roll
-			if grunt.upp.edu > 12:
-				grunt.upp.edu = 12
-			s = 'Edu +%d' % roll
-			grunt.history.append(s)
+           dm = 0
+           if grunt.upp.int >= 9:
+               dm += 1
+           roll = dm + randint(1,6) - 3
+           if roll < 1:
+              roll = 1
+           grunt.upp.edu += roll
+           if grunt.upp.edu > 12:
+			grunt.upp.edu = 12
+           s = 'Edu +%d' % roll
+           grunt.history.append(s)
 			#check for honors
-			dm = 0
-			if grunt.upp.int >=9:
-				dm += 1
-			roll = dm + randint(1,6) + randint(1,6)
-			if roll >= 9:
-				grunt.honors = True
-				grunt.history.append('Graduated Naval Academy with Honors')
-			grunt.age += 4  #Four years to complete
-			grunt.officer = True
-			grunt.rank = 0
-			return True
-		else:
+           dm = 0
+           if grunt.upp.int >=9:
+			dm += 1
+           roll = dm + randint(1,6) + randint(1,6)
+           if roll >= 9:
+			grunt.honors = True
+			grunt.history.append('Graduated Naval Academy with Honors')
+           grunt.age += 4  #Four years to complete
+           grunt.officer = True
+           grunt.rank = 0
+           return True
+        else:
 			#short three year term next
-			grunt.history.append('Failed Naval Academy')
-			grunt.age += 1  #one year to fail
-			return False
-	else:
+		grunt.history.append('Failed Naval Academy')
+		grunt.age += 1  #one year to fail
+		return False
+    else:
 		grunt.history.append('Not accepted to Naval Academy')
 		return False   #no aging if not accepted
 #end of Naval_Academy
 
 def flight_school(grunt):
-	'Flight School'
+    'Flight School'
+    # June 2015 MU updated skills to be a dictionary
 
-	dm = 0
-	if grunt.upp.dex >= 9:
+    dm = 0
+    if grunt.upp.dex >= 9:
+        dm += 1
+    roll = dm + randint(1,6) + randint(1,6)
+    if roll >= 9:
+        grunt.history.append('Accepted to Flight School')
+        dm = 0
+        if grunt.upp.int >= 8:
 		dm += 1
-	roll = dm + randint(1,6) + randint(1,6)
-	if roll >= 9:
-		grunt.history.append('Accepted to Flight School')
-		dm = 0
-		if grunt.upp.int >= 8:
-			dm += 1
-		roll = dm + randint(1,6) + randint(1,6)
-		if roll >=7:   #graduate flight school
-			grunt.schools.append('Flight')
-			grunt.skills.append('Pilot')
-			grunt.history.append('Pilot')
-			if randint(1,6) >= 4:
-				grunt.skills.append('Pilot')
-				grunt.history.append('Pilot')
-			if randint(1,6) >= 4:
-				grunt.skills.append('Ships Boat')
-				grunt.history.append('Ships Boat')
-			if randint(1,6) >= 4:
-				grunt.skills.append('Nav')
-				grunt.history.append('Nav')
-			grunt.history.append('Graduated Flight School')
-			grunt.flight = True
-			grunt.age += 1   #pass or fail, takes one year
-			return True
-		else:
+        roll = dm + randint(1,6) + randint(1,6)
+        if roll >=7:   #graduate flight school
+            grunt.skills['Pilot'] = grunt.skills.get('Pilot',0) + 1
+            grunt.history.append('Pilot')
+            if randint(1,6) >= 4:
+             grunt.skills['Pilot'] = grunt.skills.get('Pilot',0) + 1
+             grunt.history.append('Pilot')
+            if randint(1,6) >= 4:
+             grunt.skills['Ships Boat'] = grunt.skills.get('Ships Boat',0) + 1
+             grunt.history.append('Ships Boat')
+            if randint(1,6) >= 4:
+             grunt.skills['Nav'] = grunt.skills.get('Nav',0) + 1
+             grunt.history.append('Nav')
+            grunt.history.append('Graduated Flight School')
+            grunt.flight = True
+            grunt.age += 1   #pass or fail, takes one year
+            return True
+        else:
 			grunt.history.append('Failed Flight School')
 			grunt.flight_fail = True
 			grunt.age += 1   #pass or fail, takes one year
 			return False
-	else:
+    else:
 		grunt.history.append('Not accepted to Flight School')
 		return False
 
@@ -617,16 +527,17 @@ def medical_school(grunt):
         if roll >=8:   #graduate medical school
             grunt.schools.append('Medical')
             grunt.upp.edu += 1
+            grunt.history.append('+1 edu')
             if grunt.upp.edu > 12:
                 grunt.upp.edu = 12
-            grunt.history.append('+1 edu')
-            grunt.skills.append('Medic')
-            grunt.skills.append('Medic')
-            grunt.skills.append('Medic')
-            grunt.history.append('Medic')
-            grunt.history.append('Medic')
-            grunt.history.append('Medic')
-            grunt.skills.append('Admin')
+                grunt.history.append('edu capped at F')
+            
+            grunt.skills['Medic'] = grunt.skills.get('Medic',0) + 1
+            grunt.skills['Medic'] = grunt.skills.get('Medic',0) + 1
+            grunt.skills['Medic'] = grunt.skills.get('Medic',0) + 1
+            grunt.skills['Medic'] = grunt.skills.get('Medic',0) + 1
+            grunt.skills['Medic'] = grunt.skills.get('Medic',0) + 1
+            grunt.skills['Admin'] = grunt.skills.get('Admin',0) + 1
             grunt.history.append('Admin')
             grunt.officer = True
             grunt.rank = 2
@@ -638,8 +549,8 @@ def medical_school(grunt):
             roll = dm + dice(2)
             if roll >= 11:
                 grunt.history.append('Graduated Medical School with Honors')
-                grunt.skills.append('Medic')
-                grunt.skills.append('Computer')
+                grunt.skills['Medic'] = grunt.skills.get('Medic',0) + 1
+                grunt.skills['Computer'] = grunt.skills.get('Computer',0) + 1
                 grunt.history.append('Medic')
                 grunt.history.append('Computer')
             else:
@@ -659,17 +570,22 @@ def navy_e_school(grunt):
     'Enlisted Engineering School'
 
     if dice() >= 5:
-        grunt.skills.append('Mechanical')
-        grunt.history.append('Mechanical')
+        eeSkill = 'Mechanical'
+        grunt.skills[eeSkill] = grunt.skills.get(eeSkill,0) + 1
+        grunt.history.append(eeSkill)
     if dice() >= 5:
-        grunt.skills.append('Electronics')
-        grunt.history.append('Electronics')
+        eeSkill = 'Electronics'
+        grunt.skills[eeSkill] = grunt.skills.get(eeSkill,0) + 1
+        grunt.history.append(eeSkill)
     if dice() >= 5:
-        grunt.skills.append('Gravitics')
-        grunt.history.append('Gravitics')
+        eeSkill = 'Gravitics'
+        grunt.skills[eeSkill] = grunt.skills.get(eeSkill,0) + 1
+        grunt.history.append(eeSkill)
     if dice() >= 5:
-        grunt.skills.append('Engineering')
-        grunt.history.append('Engineering')
+        eeSkill = 'Engineering'
+        grunt.skills[eeSkill] = grunt.skills.get(eeSkill,0) + 1
+        grunt.history.append(eeSkill)
+        
 
 #end navy_e_school()
 							
@@ -682,11 +598,13 @@ def navy_ocs(grunt):
    grunt.schools.append('OCS')
 
    roll = dice()-1
-   grunt.skills.append(command_skills[roll])
-   grunt.history.append(command_skills[roll])
+   cSkill = command_skills[roll]
+   grunt.skills[cSkill] = grunt.skills.get(cSkill,0) + 1
+   grunt.history.append(cSkill)
    roll = dice()-1
-   grunt.skills.append(staff_skills[roll])
-   grunt.history.append(staff_skills[roll])
+   sSkill = staff_skills[roll]
+   grunt.skills[sSkill] = grunt.skills.get(sSkill,0) + 1
+   grunt.history.append(sSkill)
    roll = dice()-1
    nbranch_skill(grunt,roll)
 #end of navy_osc
@@ -702,7 +620,7 @@ def navy_bat(grunt):
             roll1 += 2
         if grunt.rank > 6:
             roll1 += 4
-        grunt.skills.append(staff_skills[roll1])
+        grunt.skills[staff_skills[roll1]] = grunt.skills.get(staff_skills[roll1],0) + 1
         grunt.history.append(staff_skills[roll1])
         nbranch_skill(grunt, roll2)
     else:
@@ -714,31 +632,28 @@ def navy_bat(grunt):
 #end of navy_bat()
 
 def nbranch_skill(grunt, roll):
-	'add a Navy branch skill'
+    'add a Navy branch skill'
 
-	roll += 2  #Imperial Navy by default
-	if roll > 6:
+    roll += 2  #Imperial Navy by default
+    if roll > 6:
 		roll = 6
-	if grunt.arm == 'Line' or grunt.arm == 'Crew':
-		grunt.skills.append(line_crew[roll])
-		grunt.history.append(line_crew[roll])
-	elif grunt.arm == 'Flight':
-		grunt.skills.append(flight[roll])
-		grunt.history.append(flight[roll])
-	elif grunt.arm == 'Gunnery':
-		grunt.skills.append(gunnery[roll])
-		grunt.history.append(gunnery[roll])
-	elif grunt.arm == 'Engineering':
-		grunt.skills.append(engineering[roll])
-		grunt.history.append(engineering[roll])
-	elif grunt.arm == 'Medical':
-		grunt.skills.append(medical[roll])
-		grunt.history.append(medical[roll])
-	elif grunt.arm == 'Technical Services':
-		grunt.skills.append(technical[roll])
-		grunt.history.append(technical[roll])
-	else:
+    if grunt.arm == 'Line' or grunt.arm == 'Crew':
+		nbSkill = line_crew[roll]
+    elif grunt.arm == 'Flight':
+		nbSkill = flight[roll]
+    elif grunt.arm == 'Gunnery':
+		nbSkill = gunnery[roll]
+    elif grunt.arm == 'Engineering':
+		nbSkill = engineering[roll]
+    elif grunt.arm == 'Medical':
+		nbSkill = medical[roll]
+    elif grunt.arm == 'Technical Services':
+		nbSkill = technical[roll]
+    else:
 		print 'In nbranch_skill and an error has occured'
+  
+    grunt.skills[nbSkill] = grunt.skills.get(nbSkill,0) + 1
+    grunt.history.append(nbSkill)
 		
 #end nbranch_skill()
 
@@ -909,7 +824,7 @@ def navy_life_skill(grunt):
     if grunt.officer:
         dm += 4
     roll = dm + dice()-1
-    grunt.skills.append(navy_life_skills[roll])
+    grunt.skills[navy_life_skills[roll]] = grunt.skills.get(navy_life_skills[roll],0) + 1
     grunt.history.append(navy_life_skills[roll])
     apply_skill(grunt,navy_life_skills[roll])
 
@@ -921,7 +836,7 @@ def shipboard_life_skill(grunt):
     if grunt.officer:
         dm += 4
     roll = dm + dice()-1
-    grunt.skills.append(shipboard_skills[roll])
+    grunt.skills[shipboard_skills[roll]] = grunt.skills.get(shipboard_skills[roll],0) + 1
     grunt.history.append(shipboard_skills[roll])
     apply_skill(grunt,shipboard_skills[roll])
 #end of shipboard_life_skill()
@@ -933,7 +848,7 @@ def get_command_skill(grunt):
     elif grunt.officer and grunt.rank >= 6:
         dm += 4
     roll = dm + dice()-1
-    grunt.skills.append(command_skills[roll])
+    grunt.skills[command_skills[roll]] = grunt.skills.get(command_skills[roll],0) + 1
     grunt.history.append(command_skills[roll])
     apply_skill(grunt,command_skills[roll])
 #end of get_command_skill()
@@ -945,7 +860,7 @@ def get_staff_skill(grunt):
      elif grunt.officer and grunt.rank >= 6:
          dm += 4
      roll = dm + dice()-1
-     grunt.skills.append(staff_skills[roll])
+     grunt.skills[sgtaff_skills[roll]] = grunt.skills.get(staff_skills[roll],0) + 1
      grunt.history.append(staff_skills[roll])
      apply_skill(grunt,staff_skills[roll])
 
@@ -958,7 +873,7 @@ def shore_duty_life_skill(grunt):
     if grunt.officer:
         dm += 4
     roll = dm + dice()-1
-    grunt.skills.append(shoreduty_skills[roll])
+    grunt.skills[shoreduty_skills[roll]] = grunt.skills.get(shoreduty_skills[roll],0) + 1
     grunt.history.append(shoreduty_skills[roll])
 #end of get_staff_skill()
 
@@ -972,7 +887,7 @@ def get_po_skill(grunt):
     elif False == grunt.officer and grunt.rank >= 6:
         dm += 4
     roll = dm + dice()-1
-    grunt.skills.append(po_skills[roll])
+    grunt.skills[po_skills[roll]] = grunt.skills.get(po_skills[roll],0) + 1
     grunt.history.append(po_skills[roll])
     apply_skill(grunt, po_skills[roll])
 #end of get_po_skill
@@ -1055,50 +970,50 @@ def navy_sd(grunt):
             navy_xtrain(grunt)
         elif roll == 1:
             if dice() >= 4:
-                grunt.skills.append('Forgery')
+                grunt.skills['Forgery'] = grunt.skills.get('Forgery',0) + 1
                 grunt.history.append('Forgery')
             if dice() >= 4:
-                grunt.skills.append('Gun Cbt')
+                grunt.skills['Gun Cbt'] = grunt.skills.get('Gun Cbt',0) + 1
                 grunt.history.append('Gun Cbt')
             if dice() >= 4:
-                grunt.skills.append('Bribery')
+                grunt.skills['Bribery'] = grunt.skills.get('Bribery',0) + 1
                 grunt.history.append('Bribery')
             if dice() >= 4:
-                grunt.skills.append('Streetwise')
+                grunt.skills['Streetwise'] = grunt.skills.get('Streetwise',0) + 1
                 grunt.history.append('Streetwise')
             if dice() >= 4:
-                grunt.skills.append('Interrogation')
+                grunt.skills['Interrogation'] = grunt.skills.get('Interrogation',0) + 1
                 grunt.history.append('Interrogation')
         elif roll == 2:
-            grunt.skills.append('Recruiting')
+            grunt.skills['Recruiting'] = grunt.skills.get('Recruiting',0) + 1
             grunt.history.append('Recruiting')
         elif roll == 3:
             navy_aa(grunt)
         elif roll == 4:
             if dice() >= 4:
-                grunt.skills.append('Ship Tactics')
+                grunt.skills['Ship Tactics'] = grunt.skills.get('Ship Tactics',0) + 1
                 grunt.history.append('Ship Tactics')
             if dice() >= 4:
-                grunt.skills.append('Fleet Tactics')
+                grunt.skills['Fleet Tactics'] = grunt.skills.get('Fleet Tactics',0) + 1
                 grunt.history.append('Fleet Tactics')
             if dice() >= 4:
-                grunt.skills.append('Leader')
+                grunt.skills['Leader'] = grunt.skills.get('Leader',0) + 1
                 grunt.history.append('Leader')
             if dice() >= 4:
-                grunt.skills.append('Admin')
+                grunt.skills['Admin'] = grunt.skills.get('Admin',0) + 1
                 grunt.history.append('Admin')
         elif roll > 4:
             if dice() >= 4:
-                grunt.skills.append('Fleet Tactics')
+                grunt.skills['Fleet Tactics'] = grunt.skills.get('Fleet Tactics',0) + 1
                 grunt.history.append('Fleet Tactics')
             if dice() >= 4:
-                grunt.skills.append('Liaison')
+                grunt.skills['Liaison'] = grunt.skills.get('Liaison',0) + 1
                 grunt.history.append('Liaison')
             if dice() >= 4:
-                grunt.skills.append('Computer')
+                grunt.skills['Computer'] = grunt.skills.get('Computer',0) + 1
                 grunt.history.append('Computer')
             if dice() >= 4:
-                grunt.skills.append('Admin')
+                grunt.skills['Admin'] = grunt.skills.get('Admin',0) + 1
                 grunt.history.append('Admin')
     else:
         s = 'Special Duty: %s' % sd_enl[roll]
@@ -1108,29 +1023,29 @@ def navy_sd(grunt):
         elif roll == 1:
             navy_spec_school(grunt)
         elif roll == 2:
-            grunt.skills.append('Recruiting')
+            grunt.skills['Recruiting'] = grunt.skills.get('Recruiting',0) + 1
             grunt.history.append('Recruiting')
             if dice() >= 4:
-                grunt.skills.append('Admin')
+                grunt.skills['Admin'] = grunt.skills.get('Admin',0) + 1
                 grunt.history.append('Admin')
         elif roll == 3:
             if dice() >= 5:
-                grunt.skills.append('Ships Lasers')
+                grunt.skills['Ships Lasers'] = grunt.skills.get('Ships Lasers',0) + 1
                 grunt.history.append('Ships Lasers')
             if dice() >= 5:
-                grunt.skills.append('Ships Missiles')
+                grunt.skills['Ships Missiles'] = grunt.skills.get('Ships Missiles',0) + 1
                 grunt.history.append('Ships Missiles')
             if dice() >= 5:
-                grunt.skills.append('Ships Particle Accelerators')
+                grunt.skills['Ships Particle Accelerators'] = grunt.skills.get('Ships Particle Accelerators',0) + 1
                 grunt.history.append('Ships Particle Accelerators')
             if dice() >= 5:
-                grunt.skills.append('Ships Energy Weapons')
+                grunt.skills['Ships Energy Weapons'] = grunt.skills.get('Ships Energy Weapons',0) + 1
                 grunt.history.append('Ships Energy Weapons')
             if dice() >= 5:
-                grunt.skills.append('Meson Weapons')
+                grunt.skills['Meson Weapons'] = grunt.skills.get('Meson Weapons',0) + 1
                 grunt.history.append('Meson Weapons')
             if dice() >= 5:
-                grunt.skills.append('Screens')
+                grunt.skills['Screens'] = grunt.skills.get('Screens',0) + 1
                 grunt.history.append('Screens')
         elif roll == 4:
             navy_e_school(grunt)
@@ -1218,9 +1133,12 @@ def lc_res(grunt, sa, command):
     dm = False
     x = len(line_crew)
     while x >= 0 and dm == False:
+        pass
+        ''' Need to fix this later
         if grunt.skills.count(line_crew[x-1]) >= 2:
             dm = True
         x -= 1
+        '''
     if dm:
         s_dm += 1
 
@@ -1267,9 +1185,9 @@ def flight_res(grunt, sa, command):
     if command:
         s = s + ' Command'
 	grunt.history.append(s)
-	auto = 0
-	no_chance = 20
-	combat_action = False
+    auto = 0
+    no_chance = 20
+    combat_action = False
  
     if sa == 'Training':
         survival_target = 3
@@ -1373,9 +1291,10 @@ def gunnery_res(grunt, sa, command):
     if command:
         s = s + ' Command'
 	grunt.history.append(s)
-	auto = 0
-	no_chance = 20
-	combat_action = False
+ 
+    auto = 0
+    no_chance = 20
+    combat_action = False
  
     if sa == 'Training':
         combat_action = False
@@ -1476,9 +1395,10 @@ def eng_res(grunt, sa, command):
     if command:
         s = s + ' Command'
 	grunt.history.append(s)
-	auto = 0
-	no_chance = 20
-	combat_action = False
+
+    auto = 0
+    no_chance = 20
+    combat_action = False
  
     if sa == 'Training':
         combat_action = False
@@ -1533,8 +1453,8 @@ def eng_res(grunt, sa, command):
     s_dm = 0
     p_dm = 0
     # Survival +1 if eng 4+
-    if grunt.skills.count('Engineering') >= 4:
-        s_dm += 1
+    #if grunt.skills.count('Engineering') >= 4:
+    #    s_dm += 1
         
 
     # Survival check
@@ -1580,9 +1500,9 @@ def medical_res(grunt, sa, command):
     if command:
 	s = s + ' Command'
 	grunt.history.append(s)
-	auto = 0
-	no_chance = 20
-	combat_action = False
+    auto = 0
+    no_chance = 20
+    combat_action = False
  
     if sa == 'Training':
         combat_action = False
@@ -1680,9 +1600,9 @@ def tech_res(grunt, sa, command):
     if command:
 	s = s + ' Command'
 	grunt.history.append(s)
-	auto = 0
-	no_chance = 20
-	combat_action = False
+    auto = 0
+    no_chance = 20
+    combat_action = False
  
     if sa == 'Training':
 	combat_action = False

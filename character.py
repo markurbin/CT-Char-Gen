@@ -1,3 +1,5 @@
+# 15 April 2015 - Fixed defect in printing intial stats
+
 import time
 from dice import *
 from arm_data import *
@@ -20,10 +22,14 @@ def generate_multi(num_characters, *args, **kwargs):
     return charlist
 
 
-enlisted_ranks = ['Private', 'Lance Corporal', 'Corporal', 'Lance Sergeant', 'Sergeant', 'Gunnery Sergeant', 'Leading Sergeant', 'First Sergeant', 'Sergeant Major']
-officer_ranks = ['Second Lieutenant', 'First Lieutenant', 'Captain', 'Major', 'Lieutenant Colonel', 'Colonel', 'Brigadier General', 'Major General', 'Lieutenant General', 'General']
+enlisted_ranks = ('Private', 'Lance Corporal', 'Corporal', 'Lance Sergeant', \
+                  'Sergeant','Gunnery Sergeant', 'Leading Sergeant',\
+                  'First Sergeant', 'Sergeant Major')
+officer_ranks = ('Second Lieutenant', 'First Lieutenant', 'Captain', 'Major',\
+                 'Lieutenant Colonel', 'Colonel', 'Brigadier General',\
+                 'Major General','Lieutenant General', 'General')
 
-noble_ranks = ['Knight', 'Baron', 'Marquis', 'Count', 'Duke']
+noble_ranks = ('Knight', 'Baron', 'Marquis', 'Count', 'Duke')
 
 
 age_bands = [
@@ -69,23 +75,29 @@ class upp(object):
         self.int = dice(qty=2)
         self.edu = dice(qty=2)
         self.soc = dice(qty=2)
+        self.o_str = self.str
+        self.o_dex = self.dex
+        self.o_end = self.end
+        self.o_int = self.int
+        self.o_edu = self.edu
+        self.o_soc = self.soc
     def get(self, statname):
         lname = statname.lower()
-        if   statname=="str": return self.str
-        elif statname=="dex": return self.dex
-        elif statname=="end": return self.end
-        elif statname=="int": return self.int
-        elif statname=="edu": return self.edu
-        elif statname=="soc": return self.soc
+        if   lname =="str": return self.str
+        elif lname =="dex": return self.dex
+        elif lname =="end": return self.end
+        elif lname =="int": return self.int
+        elif lname =="edu": return self.edu
+        elif lname =="soc": return self.soc
         else: raise InvalidStatName(statname)
     def set(self, statname, newvalue):
         lname = statname.lower()
-        if   statname=="str": self.str = newvalue
-        elif statname=="dex": self.dex = newvalue
-        elif statname=="end": self.end = newvalue
-        elif statname=="int": self.int = newvalue
-        elif statname=="edu": self.edu = newvalue
-        elif statname=="soc": self.soc = newvalue
+        if   lname=="str": self.str = newvalue
+        elif lname=="dex": self.dex = newvalue
+        elif lname=="end": self.end = newvalue
+        elif lname=="int": self.int = newvalue
+        elif lname=="edu": self.edu = newvalue
+        elif lname=="soc": self.soc = newvalue
         else: raise InvalidStatName(statname)
     def adjust(self, statname, adjustment):
         self.set(statname, self.get(statname) + adjustment)
@@ -106,7 +118,7 @@ class B4Char(object):
                 self.hpName = 'Sylea'       # Sylea by default
                 self.hpTL = 12
                 self.TL = 12
-                self.skills=[]
+                self.skills=dict()
                 self.schools=[]
                 self.xTrained=[]
                 self.branch = 'Imperial Army'  #IA by default
@@ -151,12 +163,12 @@ class B4Char(object):
         def is_navy(self):
             return self.branch=='Imperial Navy'
 
-        def die(self, year=None, natural=False):
+        def die(self, natural=False):
             self.alive = False
             if natural:
-                s = 'Died of natural causes (stat reduced to 0) during year %d of term %d' % (year,self.term)
+                s = 'Died of natural causes (stat reduced to 0) during term %d' % (self.term)
             else:
-                s = 'Died in service to the Imperium during year %d of term %d' % (year,self.term)
+                s = 'Died in service to the Imperium during term %d' % (self.term)
             self.history.append(s)
 
         def stat_change(self, statname, adjustment, by_age=False):
@@ -174,11 +186,14 @@ class B4Char(object):
         def apply_skill(self, skill, by_age=False):
             "Apply a skill string such as '+1 int'"
             bits = skill.split()
-            if len(bits)<2: return
+            
+            
+
+            if len(bits) < 2: return
             try:
                 adjustment = int(bits[0])
                 stat = bits[1].lower()
-                
+               
                 self.stat_change(stat, adjustment, by_age)
             except ValueError:
                 pass
@@ -188,19 +203,19 @@ class B4Char(object):
         def is_dead(self):
             return not self.alive
 
-        def age_check(self):
-            'Perform the age check.'
-            if self.is_dead():  #already dead, don't bother
-                return False
-            for band in age_bands:
-                if band["range"]["lower"] <= self.age <= band["range"]["upper"]:
-                    for stat, change in band["changes"].items():
-                        if dice(qty=2) < change["roll"]:
-                            self.stat_change(stat, change["adj"], by_age=True)
+	def age_check(self):
+	    'Perform the age check.'
+	    if self.is_dead():  #already dead, don't bother
+	        return False
+	    for band in age_bands:
+	        if band["range"]["lower"] <= self.age <= band["range"]["upper"]:
+	            for stat, change in band["changes"].items():
+	                if dice(qty=2) < change["roll"]:
+	                    self.stat_change(stat, change["adj"], by_age=True)
                             if self.is_dead():
                                 return False
-                    break
-            return True
+	            break
+	    return True
 
         def arm_entry(self, special_marine_infantry=True):
             if self.branch=='Imperial Navy':
@@ -270,7 +285,20 @@ class B4Char(object):
                 elif 'X' == line[7]:
                     self.arm = 'Commando'   #set arm to Commando   #currently for testing only, can't start in Commandos
             else:
-                self.arm = b5_data.arm_enlisted_Table[0]  #Imperial Navy.  Set up later
+                if 'L' == line[7]:
+                    self.arm = b5_data.navy_branch[0]  #Imperial Navy.  Set up later
+                elif 'F' == line[7]:
+                    self.arm = b5_data.navy_branch[1]
+                elif 'G' == line[7]:
+                    self.arm = b5_data.navy_branch[2]
+                elif 'E' == line[7]:
+                    self.arm = b5_data.navy_branch[3]
+                elif 'M' == line[7]:
+                    self.arm = b5_data.navy_branch[4]
+                elif 'T' == line[7]:
+                    self.arm = b5_data.navy_branch[5]
+                else:
+                    print 'error reading Navy branch'
             #print 'read in %s' % line
             return True
         
