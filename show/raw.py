@@ -1,3 +1,5 @@
+# June 2015 MU Updated skills as dictionary
+
 from b5_data import display_b5_rank   # 6/11/13 MU
 
 def display_noble_rank(grunt):
@@ -75,7 +77,7 @@ def print_Char_Data(grunt):
     print 'Skills:'
     #grunt.skills.sort()
     for item in grunt.skills:
-        print item
+        print item, ' - ',grunt.skills[item]
 
     if grunt.muster_cash:
         print 'Muster out Cash: '
