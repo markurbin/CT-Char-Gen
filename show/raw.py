@@ -1,6 +1,7 @@
 # June 2015 MU Updated skills as dictionary
 
 from b5_data import display_b5_rank   # 6/11/13 MU
+import b5_data
 
 def display_noble_rank(grunt):
     'Display the nobla rank, from Knight to Duke'

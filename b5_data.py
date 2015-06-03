@@ -1657,8 +1657,9 @@ def tech_res(grunt, sa, command):
     dm = False
     x = len(technical)
     while x >= 0 and dm == False:
-        if grunt.skills.count(technical[x-1]) >= 3:
-            dm = True
+        #if grunt.skills.count(technical[x-1]) >= 3:
+        #    dm = True
+        #Fix this later
         x -= 1
     if dm:
         s_dm += 1
@@ -1688,8 +1689,9 @@ def tech_res(grunt, sa, command):
     dm = False
     x = len(technical)
     while x >= 0 and dm == False:
-        if grunt.skills.count(line_crew[x-1]) >= 2:
-            dm = True
+#        if grunt.skills.count(line_crew[x-1]) >= 2:
+#            dm = True
+# Fix this later
         x -= 1
     if dm:
         s_dm += 1
