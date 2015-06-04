@@ -1,4 +1,5 @@
 # 15 April 2015 - Fixed defect in printing intial stats
+# June 2015 - MU - Added add_skill() to B4Char
 
 import time
 from dice import *
@@ -200,6 +201,19 @@ class B4Char(object):
             except InvalidStatName:
                 pass
 
+        def add_skill(self,skill):
+            'add a skill to the skill dict except stat changes'
+            #added June 4, 2015 MU
+            
+            self.history.append(skill)
+            if '+' in skill:
+                return
+            else:
+                grunt.skills[skill] = grunt.skills.get(skill,0) + 1
+            return
+        #end of add_skill
+            
+            
         def is_dead(self):
             return not self.alive
 
