@@ -11,7 +11,7 @@ command_skills = ('+1 end', 'Gun Cmbt', 'Vehicle', 'Hvy Wpns', 'Leader', 'Tactic
 staff_skills = ('Mechanical', 'Fwd Obs', 'Computer', 'Electronics', 'Medic', 'Instruction', 'Admin', 'Admin')
 shipboard_skills = ('Fwd Obs', 'Ships Boat', 'Gunnery', 'Vac Suit', 'Gunnery', 'Vac Suit')
 
-
+'''
 def record(grunt, skillname):
     #grunt.skills.append(skillname)
     # if it is a stat increase, don't list it in skills, just apply it
@@ -21,7 +21,7 @@ def record(grunt, skillname):
     else:
         grunt.skills[skillname] = grunt.skills.get(skillname,0) + 1
     grunt.history.append(skillname)
-    
+''' 
 
 def life_skill(grunt):
     'get a skill from the army life table'
@@ -42,7 +42,7 @@ def life_skill(grunt):
     else:
         raise Exception()
 
-    record( grunt, table[roll-1] )
+    grunt.add_skill(table[roll-1] )
 #end of life_skill
 
 
@@ -68,7 +68,7 @@ def get_nco_skill(grunt):
     elif grunt.rank == 8: # Sergeant Major
         roll += 5
 
-    record( grunt, nco_skills[roll-1] )
+    grunt.add_skill(nco_skills[roll-1] )
 #end of get_nco_skill
 
 ###################################################################

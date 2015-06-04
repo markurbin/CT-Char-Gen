@@ -49,13 +49,13 @@ def cross_train(grunt):
 
 def specialist_school(grunt):
     roll = dice()
-    school = specialist_school_table[roll - 1]
+    sSkill = specialist_school_table[roll - 1]
     s = 'Attended %s school' % school
     grunt.history.append(s)
     
-    skills.record(grunt, school)
+    grunt.add_skill(sSkill)
     
-    school_text = 'Specialist School: ' + school
+    school_text = 'Specialist School: ' + sSkill
     grunt.schools.append(school_text)
 #send of specialist_school
 
@@ -114,7 +114,7 @@ def officer_special_assign(grunt, school):
     threshold = schools[school]["threshold"]
     for skill in schools[school]["skills"]:
         if dice() >= threshold:
-            skills.record(grunt, skill)
+            grunt.add_skill(skill)
 
 def attache_or_aide(grunt):
     if dice()-1 > 3:

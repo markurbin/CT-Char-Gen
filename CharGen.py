@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # Code samples: http://wiki.python.org/moin/SimplePrograms
 # Traveller Book 4 & 5 character Generation using classes
-# November 2012 - Mark Urbin
+# November 2012 - 2015 - Mark Urbin
 # "The Traveller game in all forms is owned by Far 
-# Future Enterprises. Copyright 1977 - 2013 Far Future 
+# Future Enterprises. Copyright 1977 - 2015 Far Future 
 # Enterprises."
 #
 # R3 - Adding read UPP, Branch & Arm from config file
