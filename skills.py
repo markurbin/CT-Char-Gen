@@ -85,14 +85,14 @@ def get_mos_skill(grunt):
         roll += 1
     #Army and Marine Arms are the same
 
-    record( grunt, arm_Table[grunt.arm]["mos"][roll-1] )
+    grunt.add_skill(arm_Table[grunt.arm]["mos"][roll-1] )
 #end of get_mos_skill
 
 def shipboard_skill(grunt):
     'get a shipboard skill. Only for Marines serving as ships troops'
 
     roll = dice()
-    record( grunt, shipboard_skills[roll-1] )
+    grunt.add_skill(shipboard_skills[roll-1] )
 #end shipboard_skill 
     
 def get_staff_skill(grunt):
@@ -102,7 +102,7 @@ def get_staff_skill(grunt):
     elif (grunt.rank > 5):
         roll += 2
     
-    record( grunt, staff_skills[roll-1] )
+    grunt.add_skill(staff_skills[roll-1] )
 #end of get_staff_skill
 
 def get_command_skill(grunt):
@@ -112,7 +112,7 @@ def get_command_skill(grunt):
     elif (grunt.rank > 5):
         Roll += 2
 
-    record( grunt, command_skills[roll-1] )
+    grunt.add_skill(command_skills[roll-1] )
 #end of get_command_skill
 
 def gain_for_enlisted(grunt, ua, ga):

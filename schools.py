@@ -68,15 +68,10 @@ def pf_training(grunt):
     # and gets one level of Instruction skill
 
     if dice() >= 3:
-        skills.record(grunt, 'Vac Suit')
-    else:
-        # just history, no skill?
-        grunt.history.append('Vac Suit')
+        grunt.add_skill('Vac Suit')
     if dice() >= 3:
-        skills.record(grunt, 'Zero-G Cbt')
-    else:
-        # just history, no skill?
-        grunt.history.append('Zero-G Cbt')
+        grunt.add_skill('Zero-G Cbt')
+
 #end of pf_training
 
 def ocs(grunt):
@@ -94,13 +89,13 @@ def ocs(grunt):
     if grunt.is_army() or grunt.is_marine():
         roll = dice()
         skill = grunt.arm_entry(special_marine_infantry=False)["mos"][roll-1]
-        skills.record(grunt, skill)
+        grunt.add_skill(skill)
     else:
         raise Exception("Navy cannot attend OCS")
 #end of ocs
 
 def recruiting(grunt):
-    skills.record(grunt, 'Recruiting')
+    grunt.add_skill('Recruiting')
 
 def officer_recruiting(grunt):
     recruiting(grunt)

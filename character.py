@@ -206,10 +206,8 @@ class B4Char(object):
             #added June 4, 2015 MU
             
             self.history.append(skill)
-            if '+' in skill:
-                return
-            else:
-                grunt.skills[skill] = grunt.skills.get(skill,0) + 1
+            if '+' not in skill:
+                self.skills[skill] = self.skills.get(skill,0) + 1
             return
         #end of add_skill
             
