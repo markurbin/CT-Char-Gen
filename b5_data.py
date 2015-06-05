@@ -7,7 +7,7 @@
 
 #from sprint import sprint
 from dice import *
-from muster import *
+import muster  
 from arm_data import branches
 import promotions #added 6/11/13 MU
 
@@ -49,7 +49,11 @@ orank = ('Ensign','Sublieutenant','Lieutenant','Lieutenant Commander', 'Commande
 #
 ###################################################################
 def apply_skill(grunt, skill): 
+    
+    print "Shouldn't be calling this function."
+    return
 
+    '''
     if '+1 str' == skill:
         grunt.upp.str += 1
     if '+1 dex' == skill:
@@ -62,6 +66,7 @@ def apply_skill(grunt, skill):
         grunt.upp.edu += 1
     if '+1 soc' == skill:
         grunt.upp.soc += 1
+    '''
 #end of apply_Skill
 
 
@@ -120,7 +125,7 @@ def apply_muster_out(grunt, bt):
 def muster_out(grunt):
         'Dermine what cash and loot you get out alive with'
 
-	mustermuster_out_rolls(grunt)
+	muster.muster_out_rolls(grunt)
 
 	if grunt.term >= 5:
 	   b1_data2.retirement_pay(grunt)
@@ -801,7 +806,7 @@ def navy_life_skill(grunt):
         dm += 4
     roll = dm + dice()-1
     grunt.add_skill(navy_life_skills[roll])
-    apply_skill(grunt,navy_life_skills[roll])
+    #apply_skill(grunt,navy_life_skills[roll])
 
 #end of navy_life_skill()
 	
@@ -812,7 +817,7 @@ def shipboard_life_skill(grunt):
         dm += 4
     roll = dm + dice()-1
     grunt.add_skill(shipboard_skills[roll])
-    apply_skill(grunt,shipboard_skills[roll])
+    
 #end of shipboard_life_skill()
 
 def get_command_skill(grunt):
@@ -823,7 +828,7 @@ def get_command_skill(grunt):
         dm += 4
     roll = dm + dice()-1
     grunt.add_skill(command_skills[roll])
-    apply_skill(grunt,command_skills[roll])
+
 #end of get_command_skill()
 
 def get_staff_skill(grunt):
@@ -834,7 +839,7 @@ def get_staff_skill(grunt):
          dm += 4
      roll = dm + dice()-1
      grunt.add_skill(staff_skills[roll])
-     apply_skill(grunt,staff_skills[roll])
+
 
 #end of get_staff_skill()
 	 
@@ -859,7 +864,7 @@ def get_po_skill(grunt):
         dm += 4
     roll = dm + dice()-1
     grunt.add_skill(po_skills[roll])
-    apply_skill(grunt, po_skills[roll])
+
 #end of get_po_skill
 
 def get_navy_skill(grunt, command, sa):

@@ -11,6 +11,8 @@ def generate(filename=None):
     grunt = B4Char()
     if filename!=None:
         grunt.load(filename)
+    else:
+        print 'No file found'
     grunt.career()
     grunt.muster_out()
     return grunt
