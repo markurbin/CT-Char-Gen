@@ -11,8 +11,6 @@ def generate(filename=None):
     grunt = B4Char()
     if filename!=None:
         grunt.load(filename)
-    else:
-        print 'No file found'
     grunt.career()
     grunt.muster_out()
     return grunt
@@ -267,7 +265,10 @@ class B4Char(object):
                 infile = open(filename, 'r')
                 line = infile.readline()
             except:
-                return False
+                #use default of Imperial Army Infantry and random UPP
+                self.branch = 'Imperial Army'
+                self.arm = 'Infantry'
+                return True
             if len(line)<8:
                 return False # line too short
 
