@@ -155,6 +155,7 @@ class B4Char(object):
                 self.flight_fail = False
                 self.navalBranch = False
                 self.bat = False
+                self.natural_death = True
                 self.dateTimeCreated = time.asctime()  #Stick in a time/date stamp
 
         def is_army(self):
@@ -164,12 +165,12 @@ class B4Char(object):
         def is_navy(self):
             return self.branch=='Imperial Navy'
 
-        def die(self, natural=False):
+        def die(self,year):
             self.alive = False
-            if natural:
+            if self.natural_death:
                 s = 'Died of natural causes (stat reduced to 0) during term %d' % (self.term)
             else:
-                s = 'Died in service to the Imperium during term %d' % (self.term)
+                s = 'Died in service to the Imperium during term %d year %d' % (self.term,year)
             self.history.append(s)
 
         def stat_change(self, statname, adjustment, by_age=False):

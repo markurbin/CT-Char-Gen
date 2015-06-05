@@ -268,6 +268,7 @@ def survival_check(grunt, survival_target, combat_action, ua, medal_name):
         s = 'Failed survival target of %d with a roll of %d' % (survival_target, roll)
         grunt.history.append(s)
         grunt.alive = False
+        grunt.natural_death = False
         return False
     else:
         if (roll == survival_target) and combat_action:
