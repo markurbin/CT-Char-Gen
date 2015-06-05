@@ -10,7 +10,9 @@ import career, muster
 def generate(filename=None):
     grunt = B4Char()
     if filename!=None:
-        grunt.load(filename)
+        grunt.load_file(filename)
+    else:
+        grunt.load_char('Marines','Infantry')
     grunt.career()
     grunt.muster_out()
     return grunt
@@ -258,7 +260,7 @@ class B4Char(object):
             else:
                 return enlisted_ranks[self.rank]
             
-        def load(self, filename):
+        def load_file(self, filename):
             'Read in upp, branch, and arm from a file.  It probably only makes sense to do this at the start.'
 
             try:
@@ -318,6 +320,50 @@ class B4Char(object):
                     self.arm = b5_data.navy_branch[5]
                 else:
                     print 'error reading Navy branch'
+            #print 'read in %s' % line
+            return True
+            
+        def load_char(self, branch, arm):
+            'branch, and arm as command line options'
+
+            #use default of Imperial Army Infantry and random UPP
+            if not branch:
+                self.branch = 'Imperial Army'
+            if not arm:
+                self.arm = 'Infantry'
+
+            if 'navy' in branch.lower():
+                self.branch = 'Imperial Navy'
+            elif 'marines' in branch.lower():
+                self.branch = 'Imperial Marines'
+            else:
+                self.branch = 'Imperial Army'
+
+
+            if self.branch == 'Imperial Marines' or self.branch == 'Imperial Army':
+                if 'COMMANDO' in arm.upper():
+                    self.arm = 'Commando'   #set arm to Commando   #currently for testing only, can't start in Commandos
+                elif 'CAV' in arm.upper():
+                    self.arm = 'Cavalry'   #set arm to Cavalry
+                elif 'ART' in arm.upper():
+                    self.arm = 'Artillery'   #set arm to artillery  #Not valid for Marines to start in
+                elif 'SUPP' in arm.upper():
+                    self.arm = 'Support'   #set arm to Support'   #Not valid for Marines to start in
+                else:
+                    self.arm = 'Infantry'  
+            else:
+                if 'T' in arm.upper():
+                    self.arm = b5_data.navy_branch[5]  
+                elif 'F' in arm.upper():
+                    self.arm = b5_data.navy_branch[1]
+                elif 'G' in arm.upper():
+                    self.arm = b5_data.navy_branch[2]
+                elif 'E' in arm.upper():
+                    self.arm = b5_data.navy_branch[3]
+                elif 'M' in arm.upper():
+                    self.arm = b5_data.navy_branch[4]
+                else:
+                    self.arm = b5_data.navy_branch[0] #Line 
             #print 'read in %s' % line
             return True
         

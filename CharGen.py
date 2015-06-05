@@ -96,7 +96,8 @@ def looper2(loop, filename, fmode):
 
 def single_Char():
     print '********************'
-    grunt = char.generate('uppba.txt')
+    #grunt = char.generate('uppba.txt')
+    grunt = char.generate()
     
     print 'starting upp: '
     raw.print_init_upp(grunt)

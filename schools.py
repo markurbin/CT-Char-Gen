@@ -50,6 +50,7 @@ def cross_train(grunt):
 def specialist_school(grunt):
     roll = dice()
     sSkill = specialist_school_table[roll - 1]
+    school = sSkill
     s = 'Attended %s school' % school
     grunt.history.append(s)
     
