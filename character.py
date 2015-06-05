@@ -186,11 +186,12 @@ class B4Char(object):
 
         def apply_skill(self, skill, by_age=False):
             "Apply a skill string such as '+1 int'"
+            
+            skill = str(skill)
             bits = skill.split()
-            
-            
 
-            if len(bits) < 2: return
+            if len(bits) < 2: 
+                return
             try:
                 adjustment = int(bits[0])
                 stat = bits[1].lower()
@@ -208,6 +209,8 @@ class B4Char(object):
             self.history.append(skill)
             if '+' not in skill:
                 self.skills[skill] = self.skills.get(skill,0) + 1
+            else:
+                self.apply_skill(skill)
             return
         #end of add_skill
             
