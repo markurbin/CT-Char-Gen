@@ -75,12 +75,10 @@ def check_reenlist(grunt):
 def first_term(grunt):
     'First term, year 1 is unique; Being nice, no survival roll first year'
 
-    #grunt.skills.append('Cbt Rifleman') # Required first skill for Army & Marines
+    grunt.history.append(grunt.branch + ' ' + grunt.arm)
     grunt.history.append('Term 1 Year 1')
     grunt.history.append('Basic Training')
-    grunt.add_skill('Cbt Rifleman')
-    
-    grunt.history.append(grunt.branch + ' ' + grunt.arm)
+    grunt.add_skill('Cbt Rifleman')  # Required first skill for Army & Marines
     
     roll = dice()
     if grunt.TL >= 12:
