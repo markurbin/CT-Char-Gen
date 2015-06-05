@@ -16,8 +16,9 @@ def print_upp(char):
     print( '%x%x%x%x%x%x' % (char.upp.str, char.upp.dex, char.upp.end, char.upp.int, char.upp.edu, char.upp.soc))
 
 def print_init_upp(char):
-    'Print the UPP to the screen'
-    print( '%x%x%x%x%x%x' % (char.init_upp.str, char.init_upp.dex, char.init_upp.end, char.init_upp.int, char.init_upp.edu, char.init_upp.soc))
+    'Print the initial UPP to the screen'
+    print( '%x%x%x%x%x%x' % (char.init_upp.o_str, char.init_upp.o_dex, char.init_upp.o_end, char.init_upp.o_int, char.init_upp.o_edu, char.init_upp.o_soc))
+    
 
 def print_history(char):
     #print out the character history
