@@ -76,8 +76,7 @@ def first_term(grunt):
     'First term, year 1 is unique; Being nice, no survival roll first year'
 
     grunt.history.append(grunt.branch + ' ' + grunt.arm)
-    grunt.history.append('Term 1 Year 1')
-    grunt.history.append('Basic Training')
+    grunt.history.append('Term 1 Year 1 - Basic & Advanced Training')
     grunt.add_skill('Cbt Rifleman')  # Required first skill for Army & Marines
     
     roll = dice()
@@ -85,8 +84,6 @@ def first_term(grunt):
         roll += 1
         
     entry = grunt.arm_entry(special_marine_infantry=False)["mos"][roll-1]
-    #grunt.skills.append(entry)
-    grunt.history.append('Advance Training: ')
     grunt.add_skill(entry)
     
     return
