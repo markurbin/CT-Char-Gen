@@ -28,7 +28,7 @@ Other Credits:
 
 Disclaimer:
 -----------
-The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977--2013 Far Future Enterprises.
+The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977--2018 Far Future Enterprises.
 
 Notes:
 ------
