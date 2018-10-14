@@ -32,10 +32,4 @@ The Traveller game in all forms is owned by Far Future Enterprises. Copyright 19
 
 Notes:
 ------
-<<<<<<< HEAD
-Defect - Attribute increases are not applied
-Defect - Muster benefits such as "Mid Psg" are being stored in the Skills list
-=======
-* Defect detected 6/17/12 by Mark Urbin
-*   UPP increases either from in service or muster benefits not being applied.
->>>>>>> MU-WIP
+
