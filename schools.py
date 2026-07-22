@@ -1,13 +1,17 @@
+# schools.py
 from dice import *
 from arm_data import *
+from b5_data import navy_spec_school, navy_e_school, navy_xtrain
 import skills
 
+
+# === YOUR FULL ORIGINAL CONTENT HERE (schools dict, all functions, sa_enl, sa_officer, etc.) ===
 specialist_school_table = ['Admin', 'Medical', 'Commo', 'Computer', 'Mechanical', 'Electronics']
 
 schools = {}
 schools['Commando School'] = {
   "threshold":5,
-  "skills":['Brawling', 'Gun Cmbt', 'Demolition', 'Wilderness Survival', 'Recon', 'Vac Suit', 'Blade Cbt', 'Instruction']
+  "skills":['Brawling', 'Gun Cmbt', 'Demolition', 'Wilderness Survival', 'Recon', 'Vacc Suit', 'Blade Cbt', 'Instruction']
 }
 
 schools['Intelligence School'] = {
@@ -29,7 +33,7 @@ schools['Staff College'] = {
 def cross_train(grunt):
     'Book 4 cross training'
     if grunt.is_navy():
-        print 'X-Training in the navy!' #debug
+        print( 'X-Training in the navy!') #debug
         b5_data.navy_xtrain(grunt)
     else:
         if grunt.arm == 'Commando':
@@ -38,7 +42,7 @@ def cross_train(grunt):
             arm_index = dice(sides=3) # any but Commando/Infantry
 
         if arms[arm_index] == grunt.arm:
-	    arm_index = 0  # can't cross-train in your own arm; set to infantry
+            arm_index = 0  # can't cross-train in your own arm; set to infantry
 
         crossarm = arms[arm_index]
         grunt.xtrained.append(crossarm)
@@ -49,14 +53,13 @@ def cross_train(grunt):
 
 def specialist_school(grunt):
     roll = dice()
-    sSkill = specialist_school_table[roll - 1]
-    school = sSkill
+    school = specialist_school_table[roll - 1]
     s = 'Attended %s school' % school
     grunt.history.append(s)
     
-    grunt.add_skill(sSkill)
+    skills.record(grunt, school)
     
-    school_text = 'Specialist School: ' + sSkill
+    school_text = 'Specialist School: ' + school
     grunt.schools.append(school_text)
 #send of specialist_school
 
@@ -68,11 +71,20 @@ def pf_training(grunt):
     # then the character is an instructor at the school
     # and gets one level of Instruction skill
 
-    if dice() >= 3:
-        grunt.add_skill('Vac Suit')
-    if dice() >= 3:
-        grunt.add_skill('Zero-G Cbt')
+def pf_training(grunt):
+    """Protected Forces Training - Book 4 special assignment"""
+    grunt.schools.append('Protected Forces')
+    grunt.history.append('Protected Forces Training')
 
+    # Each skill granted independently on 3+ (1d6) — always use record()
+    if dice() >= 3:
+        skills.record(grunt, 'Vacc Suit')      
+    if dice() >= 3:
+        skills.record(grunt, 'Zero-G Cbt')
+
+    # TODO (future): Instructor check if character already has level 2 in these skills
+    # if grunt.skills.get('Vacc Suit', 0) >= 2 or grunt.skills.get('Zero-G Cbt', 0) >= 2:
+    #     skills.record(grunt, 'Instruction')
 #end of pf_training
 
 def ocs(grunt):
@@ -90,13 +102,15 @@ def ocs(grunt):
     if grunt.is_army() or grunt.is_marine():
         roll = dice()
         skill = grunt.arm_entry(special_marine_infantry=False)["mos"][roll-1]
-        grunt.add_skill(skill)
+        skills.record(grunt, skill)
     else:
-        raise Exception("Navy cannot attend OCS")
+        # Navy should never reach here, but just in case
+        grunt.history.append('Navy character cannot attend OCS - assignment cancelled *DEFECT FOUND!')
+    return
 #end of ocs
 
 def recruiting(grunt):
-    grunt.add_skill('Recruiting')
+    skills.record(grunt, 'Recruiting')
 
 def officer_recruiting(grunt):
     recruiting(grunt)
@@ -115,7 +129,7 @@ def officer_special_assign(grunt, school):
     threshold = schools[school]["threshold"]
     for skill in schools[school]["skills"]:
         if dice() >= threshold:
-            grunt.add_skill(skill)
+            skills.record(grunt, skill)
 
 def attache_or_aide(grunt):
     if dice()-1 > 3:
@@ -160,15 +174,40 @@ sa_officer = [
     {"name":'Military Attache/Aide', "apply":attache_or_aide},
 ]
 
+
 def special_assign(grunt):
-    roll = dice()-1
-    if grunt.officer:    
-        s = 'Special Assignment is %s' % sa_officer[roll]["name"]
-        grunt.history.append(s)
-        sa_officer[roll]["apply"](grunt)
+    """Special Assignment / School - properly separated for Navy"""
+    roll = dice() - 1  # 1d6 roll
+
+    if grunt.is_navy():
+        grunt.history.append('Special Duty (Navy)')
+
+        if grunt.officer:
+            # Navy Officers
+            sa_options = [intelligence_school, command_college, staff_college,
+                          officer_recruiting, attache_or_aide]
+            sa_options[roll % len(sa_options)](grunt)
+        else:
+            # Navy Enlisted - NO OCS
+            sa_options = [
+                cross_train,                    # 0: Cross Training
+                navy_spec_school,               # 1: Specialist School
+                recruiting,                     # 2: Recruiting
+                lambda g: (g.history.append('Gunnery School'), 
+                           skills.record(g, 'Gunnery'))[0],   # 3: Gunnery School
+                lambda g: (g.history.append('Engineering School'), 
+                           skills.record(g, 'Engineering'))[0], # 4: Engineering School
+            ]
+            sa_options[roll % len(sa_options)](grunt)
+
     else:
-        s = 'Special Assignment is %s' % sa_enl[roll]["name"]
-        grunt.history.append(s)
-        sa_enl[roll]["apply"](grunt)
-#end of special_assignment
+        # === Army / Marine only ===
+        if grunt.officer:
+            s = 'Special Assignment is %s' % sa_officer[roll]["name"]
+            grunt.history.append(s)
+            sa_officer[roll]["apply"](grunt)
+        else:
+            s = 'Special Assignment is %s' % sa_enl[roll]["name"]
+            grunt.history.append(s)
+            sa_enl[roll]["apply"](grunt)
 
