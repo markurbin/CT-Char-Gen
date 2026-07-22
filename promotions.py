@@ -1,58 +1,70 @@
+# promotions.py
+# Traveller Book 4 Promotions, Medals, and Ribbons
+
 def award_medal(grunt, medal, ua):
-    s = '%s awarded in %s' % (medal, ua)
+    """Award a medal and record it."""
+    s = f'{medal} awarded in {ua}'
     grunt.decorations.append(s)
     grunt.history.append(s)
 
+
 def get_medal(grunt, roll, target, ua):
-    if (roll - target) >= 6:
-        award_medal(grunt, "SEH", ua)
-    elif (3 <= (roll - target) < 6):
-        award_medal(grunt, "MCG", ua)
-    elif (roll - target) < 3:
-        award_medal(grunt, "MCUF", ua)
+    """Award appropriate medal based on how well the decoration roll succeeded."""
+    margin = roll - target
+    if margin >= 6:
+        award_medal(grunt, "SEH", ua)      # Star of Extreme Heroism
+    elif margin >= 3:
+        award_medal(grunt, "MCG", ua)      # Meritorious Conduct in Ground Combat
+    else:
+        award_medal(grunt, "MCUF", ua)     # Meritorious Conduct Under Fire
+
 
 def award_ribbon(grunt, ga, ua):
-    ribbon_type = '%s Combat Ribbon'
-    if grunt.officer and (ga=='Command'):
-        ribbon_type = '%s Combat Command Ribbon'
-    ribbon_name = ribbon_type % ua
+    """Award combat ribbon (normal or command version)."""
+    if grunt.officer and ga == 'Command':
+        ribbon_name = f'{ua} Combat Command Ribbon'
+    else:
+        ribbon_name = f'{ua} Combat Ribbon'
+    
     grunt.ribbons.append(ribbon_name)
     grunt.history.append(ribbon_name)
 
+
 def promote(grunt):
+    """Main promotion dispatcher."""
     if grunt.officer:
         officer(grunt)
     else:
         enlisted(grunt)
 
 def enlisted(grunt):
+    """Promote enlisted character."""
     if grunt.officer:
         officer(grunt)
         return False
+
     grunt.rank += 1
     if grunt.rank > 8:
         grunt.rank = 8
-        s = 'No promotion avilable until after OCS' 
-        grunt.history.append(s)
+        grunt.history.append('No further promotion available (max rank reached)')
         return True
     else:
-        s = 'Promoted to %s' % grunt.military_rank()
+        s = f'Promoted to {grunt.military_rank()}'
         grunt.history.append(s)
         return True
-#end enlisted
 
 def officer(grunt):
-    if (False == grunt.officer):   #error condition, should never hit this
+    """Promote officer character."""
+    if not grunt.officer:
         enlisted(grunt)
         return False
-    if grunt.rank == 9:
-        grunt.rank = 9
-        s = 'No further promotion availiable.' 
-        grunt.history.append(s)
-    else:
-        grunt.rank += 1
-        grunt.promote_this_term = True
-        s = 'Promoted to %s' % grunt.military_rank()
-        grunt.history.append(s)
+
+    if grunt.rank >= 9:
+        grunt.history.append('No further promotion available (already at General rank)')
+        return True
+
+    grunt.rank += 1
+    grunt.promote_this_term = True
+    s = f'Promoted to {grunt.military_rank()}'
+    grunt.history.append(s)
     return True
-#end of officer

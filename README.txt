@@ -21,6 +21,8 @@ Contributions:
 * Mark Urbin: original creator
 * GreyKnight: contributor
 * Project last updated June 2013
+* July 2026 - MU - Huge update. Many bug fixes and made more modular
+*    Also added csv file outputs. Useful for analysis and debugging
 
 Other Credits:
 --------------
@@ -28,7 +30,7 @@ Other Credits:
 
 Disclaimer:
 -----------
-The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977--2018 Far Future Enterprises.
+The Traveller game in all forms is owned by Far Future Enterprises. Copyright 1977--2026 Far Future Enterprises.
 
 Notes:
 ------
