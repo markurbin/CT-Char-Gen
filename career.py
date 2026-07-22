@@ -1,196 +1,205 @@
-# 15 April 2015 - added support for skills as a dictionary
+# career.py
+# Book 4 + Book 5 Career Logic - Final Cleaned Version
 
+import random
 from dice import *
-from career_navy import *
 import resolve
 import schools
+import arm_data
+from career_navy import navy_term   # Book 5 Navy support
 
 RETIREMENT_TERMS = 7
 
+def select_initial_arm(grunt):
+    """Select initial arm per Book 4 rules."""
+    if grunt.branch == 'Imperial Army':
+        # Equal chance for each arm
+        grunt.arm = random.choice(['Infantry', 'Cavalry', 'Artillery', 'Support'])
+    elif grunt.branch == 'Imperial Marines':
+        # Mostly Infantry
+        grunt.arm = 'Infantry' if random.random() < 0.8 else 'Support'
+    else:
+        grunt.arm = 'Infantry'  # fallback
 
-
+    grunt.history.append(f'{grunt.branch} / {grunt.arm}')
 
 def army_marine_xtraining_xfer(grunt):
-    'Cross Training transfer for Army & Marines'
-    # MU 6/11/13 added old branch to history
-
-    #Check for Cross Training
-    if ((False == grunt.officer) and grunt.xtrained) and (grunt.arm not in grunt.xtrained):
-        if coin_flip():   # 50% chance
+    """Cross Training / Commando transfer for Army & Marines"""
+    # Cross-training transfer
+    if (not grunt.officer and 
+        getattr(grunt, 'xtrained', None) and 
+        grunt.xtrained and 
+        grunt.arm not in grunt.xtrained):
+        
+        if coin_flip():
             old_arm = grunt.arm
-            x = dice(sides= 1+len(grunt.xtrained) )
-            new_arm = grunt.xtrained[x-2]
-            s = 'Changing branch from %s to %s' % (old_arm, new_arm)
-            grunt.history.append(s)
+            x = dice(sides=1 + len(grunt.xtrained))
+            new_arm = grunt.xtrained[x - 2]
+            grunt.history.append(f'Changing branch from {old_arm} to {new_arm}')
             grunt.arm = new_arm
 
-    # if not commando and attended commando school, give chance to join commandos
-    if ("Commando School" in grunt.schools) and (grunt.arm != "Commando"):
-            #No choice! Going Commando!
-        s = 'Transfered to Commando arm from %s arm at start of term %d' % (grunt.arm, grunt.term)
-        grunt.history.append(s)
+    # Commando School transfer
+    if "Commando School" in getattr(grunt, 'schools', []) and grunt.arm != "Commando":
+        grunt.history.append(f'Transferred to Commando from {grunt.arm}')
         grunt.arm = "Commando"
-#end of army_marine_xtraining_xfer
+
 
 def check_reenlist(grunt):
-    'Check for re-enlistment'
-    # if a 12 is rolled, you have to reenlist, even if at
-    # or past the manditory retirement
-    # return values:
-    #   False    - failed reenlist
-    #   True     - successful reenlist
-    #   'forced' - Forced reenlist
-
-    rvalue = False
+    """Check for re-enlistment at end of term."""
     if grunt.branch == 'Imperial Army':
-        target = 7 #IA
-        if grunt.officer == False:
-            target -= 2
+        target = 7 if grunt.officer else 5
     elif grunt.branch == 'Imperial Marines':
-        target = 6  #IM
+        target = 6
     elif grunt.branch == 'Imperial Navy':
-        target = 6  #IN
-        if (grunt.officer == False) and grunt.rank >=4:
+        target = 6
+        if not grunt.officer and grunt.rank >= 4:
             target -= 1
         if grunt.officer:
-            target -=  1
+            target -= 1
+    else:
+        target = 6
+
     roll = dice(qty=2)
+
     if roll > target:
         return False
-    else:
-        if grunt.term >= RETIREMENT_TERMS:
-            if 12==roll:
-                rvalue = 'forced'
-            else:
-                rvalue = False
-        else:
-            rvalue = True
 
-    if (grunt.branch == 'Imperial Army') or (grunt.branch == 'Imperial Marines'):
-        army_marine_xtraining_xfer(grunt)
-    return rvalue
-#end check_reenlist()
+    # Mandatory reenlistment after term 7+
+    if grunt.term >= RETIREMENT_TERMS:
+        return 'forced' if roll == 12 else False
+
+    return True
 
 
 def first_term(grunt):
-    'First term, year 1 is unique; Being nice, no survival roll first year'
-
-    #grunt.skills.append('Cbt Rifleman') # Required first skill for Army & Marines
-    grunt.skills['Cbt Rifleman'] = grunt.skills.get('Cbt Rifleman',0) + 1
+    """First term basic & advanced training - Army/Marines only"""
     grunt.history.append('Term 1 Year 1')
-    grunt.history.append(grunt.branch + ' ' + grunt.arm)
+    # Need to select an arm
+    # For Army - Infrantry, Cavalry, Artillery, Support
+    # For Marine - Infantry or support
+    # Cannot enter Commando branch on elistment
+    if grunt.branch == 'Imperial Army':
+        roll = random.randint(0,3)
+        grunt.arm = arm_data.arms[roll]
+    else:
+        roll = random.randint(0,1)
+        if roll == 0:
+            grunt.arm =  'Infantry'
+        else:
+            grunt.arm = 'Support'
+    grunt.history.append(f'{grunt.branch} / {grunt.arm}')
     grunt.history.append('Basic Training: Cbt Rifleman')
-    roll = dice()
-    if grunt.TL >= 12:
-        roll += 1
-        
-    entry = grunt.arm_entry(special_marine_infantry=False)["mos"][roll-1]
-    #grunt.skills.append(entry)
-    grunt.skills[entry] = grunt.skills.get(entry,0) + 1
-    s = 'Advance Training: %s' % entry
-    grunt.history.append(s)
-    
-    return
-#end first_term()
 
+    # Basic Training skill
+    grunt.skills['Cbt Rifleman'] = grunt.skills.get('Cbt Rifleman', 0) + 1
+
+    # Advanced Training (MOS skill)
+    roll = dice()
+    if getattr(grunt, 'TL', 12) >= 12:
+        roll += 1
+    roll = min(roll, 7)
+
+    arm_entry = grunt.arm_entry(special_marine_infantry=False)
+    entry = arm_entry["mos"][roll - 1]
     
+    grunt.skills[entry] = grunt.skills.get(entry, 0) + 1
+    grunt.history.append(f'Advanced Training: {entry}')
+
+    grunt.age += 1  # Year 1 complete
+
+
 def resolve_year(grunt, ua, ga):
-    #now resolve the year
-    if grunt.is_army():
-        if (grunt.arm == 'Infantry') or (grunt.arm == 'Cavalry') or (grunt.arm == 'Artillery'):
-            resolve.general(grunt, ua, ga)
-        elif grunt.arm == 'Support':
-            resolve.support(grunt, ua, ga)
-        elif grunt.arm == 'Commando':
-            resolve.commando(grunt, ua, ga)
-    elif grunt.is_marine():
-        if grunt.arm == 'Infantry':
-            resolve.marine(grunt, ua, ga)
-        elif (grunt.arm == 'Cavalry') or (grunt.arm == 'Artillery'):
-            resolve.general(grunt, ua, ga)
-        elif grunt.arm == 'Support':
-            resolve.support(grunt, ua, ga)
-        elif grunt.arm == 'Commando':
-            resolve.commando(grunt, ua, ga)   #MU 6/11/13 added commando option to Marines
+    """Route year resolution for Army/Marines to the correct resolver."""
+    if grunt.arm in ('Infantry', 'Cavalry', 'Artillery'):
+        resolve.general(grunt, ua, ga)
+    elif grunt.arm == 'Support':
+        resolve.support(grunt, ua, ga)
+    elif grunt.arm == 'Commando':
+        resolve.commando(grunt, ua, ga)
+    else:
+        # Fallback
+        resolve.general(grunt, ua, ga)
 
 
 def army_marine_year(grunt):
-    'Serve 1 year in the Imperial Army/Marines'
-    # Determine General assignment
+    """Resolve one year for Army or Marine characters."""
+    # Determine General Assignment (GA)
     roll = dice()
-    # edu bonus not optional at this point
-    # if Edu >= 8, +1 to the die rolll
     if grunt.upp.edu >= 8:
         roll += 1
-
-    #bucking for command 
     if grunt.officer:
-       roll = roll - 1
-       if roll < 0: roll = 0
+        roll = max(roll - 1, 0)
 
-    ga = grunt.arm_entry(special_marine_infantry=False)["ga"][roll-1]
+    ga = grunt.arm_entry(special_marine_infantry=False)["ga"][roll - 1]
 
     if grunt.officer:
-        s = 'General assignment is %s' % ga
-        grunt.history.append(s)
+        grunt.history.append(f'General assignment: {ga}')
 
-    # determine unit assignment
+    # Resolve the year
     if ga == 'Special':
         schools.special_assign(grunt)
     else:
         roll = dice(qty=2) - 1
-        ua = grunt.arm_entry()["ua"][roll-1]
-
+        ua_table = grunt.arm_entry()["ua"]
+        ua = ua_table[roll % len(ua_table)]
         resolve_year(grunt, ua, ga)
 
     if grunt.alive:
         grunt.age += 1
 
-# end of army_marine_year()
-
 
 def army_marine_term(grunt):
-    'Work through a 4 year term in the Army or Marines'
-    
-    promote_this_term = False
-    for year in range(1,5):
-        if grunt.term==1 and year==1:
-            first_term(grunt)  # Basic & Advanced Training, Year 1
-            grunt.age += 1
+    """Full 4-year term for Army / Marines"""
+    for year in range(1, 5):
+        if grunt.term == 1 and year == 1:
+            first_term(grunt)
         else:
-            s = 'Term %d Year %d' % (grunt.term, year)
-            grunt.history.append(s)
+            grunt.history.append(f'Term {grunt.term} Year {year}')
             army_marine_year(grunt)
-            if grunt.is_dead(): break
 
-    if grunt.alive:
+        # Stop immediately if character dies or is gravely wounded
+        if not grunt.alive or getattr(grunt, 'musOut', False):
+            break
+
+    # End of term cleanup
+    if getattr(grunt, 'musOut', False):
+        grunt.history.append(f'Mustered out due to wounds in term {grunt.term}')
+    elif grunt.alive:
         grunt.term += 1
         reenlist = check_reenlist(grunt)
-        if 'forced' == reenlist:
-            s = 'Mandatory re-enlistment after term %d' % grunt.term
-            grunt.history.append(s)
+        if reenlist == 'forced':
+            grunt.history.append(f'Mandatory re-enlistment after term {grunt.term}')
             grunt.reenlist = True
         else:
             grunt.reenlist = reenlist
     else:
-        grunt.die(year)
+        grunt.die()
+
     grunt.history.append('#####')
-#end army_marine_term()
 
 
 def term(grunt):
+    """Main dispatcher - This is the key function"""
     if grunt.is_navy():
-        navy_term(grunt)
+        navy_term(grunt)          # Book 5 Navy
     else:
-        army_marine_term(grunt)
+        army_marine_term(grunt)   # Book 4 Army/Marines
+
 
 def career(grunt):
-    if grunt.branch=='Imperial Navy':
-        grunt.TL = 15 # Imperial Navy TL is F
-    while grunt.alive and grunt.reenlist:
+    """Main career entry point for all branches."""
+    if grunt.branch == 'Imperial Navy':
+        grunt.TL = 15
+        grunt.arm = 'Line'      #added 04 June 2026
+
+    while grunt.alive and grunt.reenlist and not getattr(grunt, 'musOut', False):
         term(grunt)
-        grunt.age_check()
+        if hasattr(grunt, 'age_check'):
+            grunt.age_check()
+
+    # Final adjustment: term count should reflect actual service terms
     if grunt.alive:
-        grunt.term -= 1 # magic offset
-    grunt.upp.check()
-    
+        grunt.term = max(grunt.term - 1, 0)
+
+    if hasattr(grunt.upp, 'check'):
+        grunt.upp.check()
